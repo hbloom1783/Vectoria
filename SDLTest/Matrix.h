@@ -9,7 +9,7 @@ namespace Geometry
 
 	struct Vector2
 	{
-		Vector2(const float& newX = 0, const float& newY = 0)
+		Vector2(float newX = 0, float newY = 0)
 		{
 			x = newX;
 			y = newY;
@@ -27,7 +27,7 @@ namespace Geometry
 
 	struct Matrix2
 	{
-		Matrix2(const float& newA, const float& newB, const float& newC, const float& newD)
+		Matrix2(float newA, float newB, float newC, float newD)
 		{
 			a = newA;
 			b = newB;
@@ -40,20 +40,16 @@ namespace Geometry
 		float c;
 		float d;
 
-		const static Matrix2 Identity;
-
 		Matrix3 Extend();
+
+		static Matrix2 RotationMatrix(const float& angle);
+
+		const static Matrix2 Identity;
 	};
-
-	Matrix2 operator*(const Matrix2& first, const Matrix2& second);
-	Vector2 operator*(const Matrix2& matrix, const Vector2& vector);
-
-	Vector2 operator+(const Vector2& first, const Vector2& second);
-	Vector2 operator-(const Vector2& first, const Vector2& second);
 
 	struct Vector3
 	{
-		Vector3(const float& newX = 0, const float& newY = 0, const float& newZ = 0)
+		Vector3(float newX = 0, float newY = 0, float newZ = 0)
 		{
 			x = newX;
 			y = newY;
@@ -65,14 +61,16 @@ namespace Geometry
 		float z;
 
 		Vector3 Normalize() const;
+
+		const static Vector3 origin;
 	};
 
 	struct Matrix3
 	{
 		Matrix3(
-			const float& newA, const float& newB, const float& newC,
-			const float& newD, const float& newE, const float& newF,
-			const float& newG, const float& newH, const float& newI)
+			float newA, float newB, float newC,
+			float newD, float newE, float newF,
+			float newG, float newH, float newI)
 		{
 			a = newA;
 			b = newB;
@@ -95,17 +93,26 @@ namespace Geometry
 		float h;
 		float i;
 
+		static Matrix3 ScaleMatrix(const float& scale);
+
 		const static Matrix3 Identity;
 	};
 
+	Matrix2 operator*(const Matrix2& first, const Matrix2& second);
+	Vector2 operator*(const Matrix2& matrix, const Vector2& vector);
+	Vector2 operator*(float coefficient, const Vector2& vector);
+	Vector2 operator*(const Vector2& vector, float coefficient);
+
+	Vector2 operator+(const Vector2& first, const Vector2& second);
+	Vector2 operator-(const Vector2& first, const Vector2& second);
+
 	Matrix3 operator*(const Matrix3& first, const Matrix3& second);
 	Vector3 operator*(const Matrix3& matrix, const Vector3& vector);
+	Vector3 operator*(float coefficient, const Vector3& vector);
+	Vector3 operator*(const Vector3& vector, float coefficient);
 
 	Vector3 operator+(const Vector3& first, const Vector3& second);
 	Vector3 operator-(const Vector3& first, const Vector3& second);
-
-	Matrix2 RotationMatrix(const float& angle);
-	Matrix3 ScaleMatrix(const float& scale);
 
 	float CalculateAngle(const Vector2& first, const Vector2& second);
 }

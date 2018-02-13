@@ -17,6 +17,8 @@ using Geometry::Triangle;
 #include "LineSegment.h"
 using Geometry::LineSegment;
 
+#include "Color.h"
+
 namespace Models
 {
 	enum PrimType
@@ -30,8 +32,8 @@ namespace Models
 	struct Primitive
 	{
 		Primitive();
-		Primitive(const LineSegment& line, SDL_Color color);
-		Primitive(const Triangle& triangle, SDL_Color color);
+		Primitive(const LineSegment& line, HSVAColor color);
+		Primitive(const Triangle& triangle, HSVAColor color);
 
 		Primitive(const Primitive& other);
 
@@ -39,12 +41,11 @@ namespace Models
 		LineSegment asLine;
 		Triangle asTri;
 
-		SDL_Color color;
+		HSVAColor color;
 	};
 
 	struct Model
 	{
-	public:
 		Model();
 
 		void Render(SDL_Renderer* renderer, Vector2 sunPos);
@@ -52,6 +53,9 @@ namespace Models
 		Vector2 offset;
 		float rotation;
 		float scale;
+
+		float huePerturbation;
+		float vertexPerturbation;
 
 		vector<Primitive> prims;
 	};

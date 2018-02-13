@@ -11,8 +11,7 @@ using XmlReader::LoadXmlFile;
 using Geometry::Matrix2;
 
 #include "Color.h"
-using Models::CompileHSVA;
-using Models::DecompileHSVA;
+using Models::HSVAColor;
 
 #include "Renderable.h"
 using Geometry::Renderable;
@@ -30,9 +29,71 @@ using Geometry::LineSegment;
 #include "Model.h"
 using Models::Model;
 using Models::Primitive;
+using Models::HSVAColor;
+
+#include "Threading.h"
+using Threads::Thread;
+using Threads::Mutex;
+using Threads::LockHold;
 
 const static int windowX = 800;
 const static int windowY = 600;
+
+class Animator : public Thread
+{
+public:
+	Animator(Model& glyph) : glyph(glyph), frameCount(0), done(false), paused(false)
+	{
+	}
+
+	virtual void StopGraceful()
+	{
+		done = true;
+	}
+
+	Mutex glyphGuard;
+
+	bool paused;
+
+private:
+	Model& glyph;
+	int frameCount;
+	bool done;
+	const unsigned long sleepDuration = 1000.0 / 60.0;
+
+	virtual void Execute()
+	{
+		while (!done)
+		{
+			if (!paused)
+			{
+				LockHold hold(glyphGuard);
+
+				glyph.rotation = frameCount++;
+				float perturbation = 1.0 - abs(cos(glyph.rotation * (M_PI/360.0)));
+				glyph.huePerturbation = perturbation * 90;
+				glyph.vertexPerturbation = perturbation * 4;
+			}
+
+			_sleep(sleepDuration);
+		}
+	}
+};
+
+void ScreenShot(SDL_Renderer* renderer)
+{
+	static int number = 0;
+	//char fileName[] = "screenshots/screenshot_000.bmp";
+	//sprintf_s(fileName, "screenshots/screenshot_%03d.bmp", number++);
+	char fileName[] = "screenshot_000.bmp";
+	sprintf_s(fileName, "screenshot_%03d.bmp", number++);
+
+	SDL_Surface *sshot = SDL_CreateRGBSurface(
+		0, windowX, windowY, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+	SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_ARGB8888, sshot->pixels, sshot->pitch);
+	SDL_SaveBMP(sshot, fileName);
+	SDL_FreeSurface(sshot);
+}
 
 int main(int argc, char* argv[])
 {
@@ -43,9 +104,12 @@ int main(int argc, char* argv[])
 	Vector3 sw(-100, 100, 0);
 
 	Model sun;
-	sun.prims.push_back(Primitive(LineSegment(se, nw), CompileHSVA(0, 0, 1, 1)));
-	sun.prims.push_back(Primitive(LineSegment(sw, ne), CompileHSVA(0, 0, 1, 1)));
+
+	HSVAColor sunWhite = HSVAColor(0, 0, 1, 1);
+	sun.prims.push_back(Primitive(LineSegment(se, nw), sunWhite));
+	sun.prims.push_back(Primitive(LineSegment(sw, ne), sunWhite));
 	sun.scale = 0.1;
+	sun.offset = Vector2(windowX - 15, windowY - 15);
 
 	Vector3 p0(0, -3, 0);
 	Vector3 p1(-3, 0, 0);
@@ -58,9 +122,9 @@ int main(int argc, char* argv[])
 	Vector3 pc2(0, 1, 1);
 	Vector3 pc3(-1, 0, 1);
 
-	SDL_Color pPaint = CompileHSVA(-15, 0.90, 1, 1);
-	SDL_Color pLine = CompileHSVA(1, .9, 1, 1);
-	SDL_Color pInnerLine = CompileHSVA(1, .9, 1, 0.25);
+	HSVAColor pPaint = HSVAColor(-15, 0.90, 1, 1);
+	HSVAColor pLine = HSVAColor(1, .9, 1, 1);
+	HSVAColor pInnerLine = HSVAColor(1, .9, 1, 0.25);
 
 	Model p;
 	p.prims.push_back(Primitive(Triangle(pc0, pc3, p1), pPaint));
@@ -86,12 +150,14 @@ int main(int argc, char* argv[])
 	p.prims.push_back(Primitive(LineSegment(pc3, p1), pInnerLine));
 	p.scale = 30;
 	p.offset = Vector2(windowX / 2, windowY / 2);
+	//p.vertexPerturbation = 5;
 
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
 		SDL_Window* window = NULL;
 		SDL_Renderer* renderer = NULL;
+		Animator animator(p);
 
 		if (SDL_CreateWindowAndRenderer(windowX, windowY, SDL_WINDOW_BORDERLESS, &window, &renderer) == 0)
 		{
@@ -99,6 +165,7 @@ int main(int argc, char* argv[])
 			bool pause = false;
 			int frameCount = 0;
 			SDL_bool done = SDL_FALSE;
+			animator.Start();
 			while (!done)
 			{
 				SDL_Event event;
@@ -107,15 +174,9 @@ int main(int argc, char* argv[])
 				SDL_RenderClear(renderer);
 
 				// render stuff here
-				//int x, y;
-				//SDL_GetMouseState(&x, &y);
-				//sun.offset.x = (cos(frameCount / 377.0) * 300) + 400;
-				//sun.offset.y = (sin(frameCount / 377.0) * 300) + 300;
-				//sun.offset = Vector2(x, y);
-				//pyramid.Render(renderer, sun.offset);
-				sun.offset = Vector2(windowX - 15, windowY - 15);
-				p.rotation = frameCount;
+				animator.glyphGuard.Lock();
 				p.Render(renderer, sun.offset);
+				animator.glyphGuard.Unlock();
 				sun.Render(renderer, Vector2::origin);
 
 				SDL_RenderPresent(renderer);
@@ -134,31 +195,19 @@ int main(int argc, char* argv[])
 							done = SDL_TRUE;
 							break;
 						case SDL_SCANCODE_P:
-							pause = !pause;
+							animator.paused = !animator.paused;
+							break;
+						case SDL_SCANCODE_PRINTSCREEN:
+							ScreenShot(renderer);
 							break;
 						}
 					}
 				}
 
-				//_sleep(10);
-
-				if (!pause)
-				{
-					char fileName[] = "screenshots/screenshot_000.bmp";
-					sprintf_s(fileName, "screenshots/screenshot_%03d.bmp", frameCount);
-
-					SDL_Surface *sshot = SDL_CreateRGBSurface(
-						0, windowX, windowY, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-					SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_ARGB8888, sshot->pixels, sshot->pitch);
-					SDL_SaveBMP(sshot, fileName);
-					SDL_FreeSurface(sshot);
-
-					frameCount++;
-				}
-
-				if (frameCount >= 360)
-					done = SDL_TRUE;
+				frameCount++;
 			}
+			animator.StopGraceful();
+			animator.Wait();
 		}
 
 		if (renderer)

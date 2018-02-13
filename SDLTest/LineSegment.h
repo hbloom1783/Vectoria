@@ -25,6 +25,8 @@ namespace Geometry
 			Vector2 offset,
 			SDL_Color color);
 
+		LineSegment PerturbVertices(float perturbation);
+
 	private:
 		Vector3 p0;
 		Vector3 p1;

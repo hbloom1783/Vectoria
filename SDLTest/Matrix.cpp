@@ -5,6 +5,9 @@
 
 namespace Geometry
 {
+
+	#pragma region Vector2
+
 	Vector3 Vector2::Extend() const
 	{
 		return Vector3(this->x, this->y, 0);
@@ -16,19 +19,59 @@ namespace Geometry
 		return Vector2(this->x * nFactor, this->y * nFactor);
 	}
 
+	const Vector2 Vector2::origin = Vector2(0, 0);
+
+	#pragma endregion
+
+	#pragma region Matrix2
+
 	Matrix3 Matrix2::Extend()
 	{
 		return Matrix3(
 			this->a, this->b, 0,
 			this->c, this->d, 0,
-			      0,       0, 1);
+			0, 0, 1);
 	}
+
+	Matrix2 Matrix2::RotationMatrix(const float& angle)
+	{
+		float radians = angle * (float)(M_PI / 180.0);
+		return Matrix2(
+			cos(radians), -sin(radians),
+			sin(radians), cos(radians));
+	}
+
+	const Matrix2 Matrix2::Identity = Matrix2(1, 0, 0, 1);
+
+	#pragma endregion
+
+	#pragma region Vector3
 
 	Vector3 Vector3::Normalize() const
 	{
 		float nFactor = 1.0f / sqrtf((this->x * this->x) + (this->y * this->y) + (this->z * this->z));
 		return Vector3(this->x * nFactor, this->y * nFactor, this->z * nFactor);
 	}
+
+	const Vector3 Vector3::origin = Vector3(0, 0, 0);
+
+	#pragma endregion
+
+	#pragma region Matrix3
+
+	Matrix3 Matrix3::ScaleMatrix(const float& scale)
+	{
+		return Matrix3(
+			scale, 0, 0,
+			0, scale, 0,
+			0, 0, scale);
+	}
+
+	const Matrix3 Matrix3::Identity = Matrix3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+
+	#pragma endregion
+
+	#pragma region Operators
 
 	Matrix2 operator*(const Matrix2& first, const Matrix2& second)
 	{
@@ -58,6 +101,16 @@ namespace Geometry
 		float y = (matrix.c * vector.x) + (matrix.d * vector.y);
 
 		return Vector2(x, y);
+	}
+
+	Vector2 operator*(float coeff, const Vector2& vector)
+	{
+		return Vector2(vector.x * coeff, vector.y * coeff);
+	}
+
+	Vector2 operator*(const Vector2& vector, float coeff)
+	{
+		return coeff * vector;
 	}
 
 	Vector2 operator+(const Vector2& first, const Vector2& second)
@@ -112,6 +165,16 @@ namespace Geometry
 		return Vector3(x, y, z);
 	}
 
+	Vector3 operator*(float coeff, const Vector3& vector)
+	{
+		return Vector3(vector.x * coeff, vector.y * coeff, vector.z * coeff);
+	}
+
+	Vector3 operator*(const Vector3& vector, float coeff)
+	{
+		return coeff * vector;
+	}
+
 	Vector3 operator+(const Vector3& first, const Vector3& second)
 	{
 		return Vector3(first.x + second.x, first.y + second.y, first.z + second.z);
@@ -122,21 +185,9 @@ namespace Geometry
 		return first + Vector3(-second.x, -second.y, -second.z);
 	}
 
-	Matrix2 RotationMatrix(const float& angle)
-	{
-		float radians = angle * (float)(M_PI / 180.0);
-		return Matrix2(
-			cos(radians), -sin(radians),
-			sin(radians), cos(radians));
-	}
+	#pragma endregion
 
-	Matrix3 ScaleMatrix(const float& scale)
-	{
-		return Matrix3(
-			scale, 0, 0,
-			0, scale, 0,
-			0, 0, scale);
-	}
+
 
 	float CalculateAngle(const Vector2& first, const Vector2& second)
 	{
@@ -145,9 +196,4 @@ namespace Geometry
 		return acos((n1.x * n2.x) + (n1.y * n2.y)) * (180.0f / M_PI);
 	}
 
-	const Vector2 Vector2::origin = Vector2(0, 0);
-
-	const Matrix2 Matrix2::Identity = Matrix2(1, 0, 0, 1);
-
-	const Matrix3 Matrix3::Identity = Matrix3(1, 0, 0, 0, 1, 0, 0, 0, 1);
 }
