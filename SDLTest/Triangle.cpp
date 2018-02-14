@@ -1,8 +1,9 @@
 #include "Triangle.h"
 
-#include "SDL2_gfxPrimitives.h""
+#include "SDL2_gfxPrimitives.h"
 
-#include <random>
+#include "Perturbation.h"
+using Perturbation::PerturbStandard;
 
 namespace Geometry
 {
@@ -58,13 +59,9 @@ namespace Geometry
 
 	Triangle Triangle::PerturbVertices(float perturbation)
 	{
-		std::random_device rd;
-		std::mt19937 mt(rd());
-		std::uniform_real_distribution<float> dist(-perturbation, perturbation);
-
 		return Triangle(
-			Vector2(this->p0.x + dist(mt), this->p0.y + dist(mt)).Extend(),
-			Vector2(this->p1.x + dist(mt), this->p1.y + dist(mt)).Extend(),
-			Vector2(this->p2.x + dist(mt), this->p2.y + dist(mt)).Extend());
+			Vector2(this->p0.x + PerturbStandard(perturbation), this->p0.y + PerturbStandard(perturbation)).Extend(),
+			Vector2(this->p1.x + PerturbStandard(perturbation), this->p1.y + PerturbStandard(perturbation)).Extend(),
+			Vector2(this->p2.x + PerturbStandard(perturbation), this->p2.y + PerturbStandard(perturbation)).Extend());
 	}
 }

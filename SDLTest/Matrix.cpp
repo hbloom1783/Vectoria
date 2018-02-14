@@ -19,7 +19,7 @@ namespace Geometry
 		return Vector2(this->x * nFactor, this->y * nFactor);
 	}
 
-	const Vector2 Vector2::origin = Vector2(0, 0);
+	const Vector2 Vector2::Origin = Vector2(0, 0);
 
 	#pragma endregion
 
@@ -53,7 +53,12 @@ namespace Geometry
 		return Vector3(this->x * nFactor, this->y * nFactor, this->z * nFactor);
 	}
 
-	const Vector3 Vector3::origin = Vector3(0, 0, 0);
+	Vector2 Vector3::Project() const
+	{
+		return Vector2(this->x, this->y);
+	}
+
+	const Vector3 Vector3::Origin = Vector3(0, 0, 0);
 
 	#pragma endregion
 
@@ -187,13 +192,10 @@ namespace Geometry
 
 	#pragma endregion
 
-
-
 	float CalculateAngle(const Vector2& first, const Vector2& second)
 	{
 		Vector2 n1 = first.Normalize();
 		Vector2 n2 = second.Normalize();
 		return acos((n1.x * n2.x) + (n1.y * n2.y)) * (180.0f / M_PI);
 	}
-
 }

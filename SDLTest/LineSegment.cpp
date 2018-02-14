@@ -2,14 +2,11 @@
 
 #include "SDL2_gfxPrimitives.h"
 
-#include <random>
+#include "Perturbation.h"
+using Perturbation::PerturbStandard;
 
 namespace Geometry
 {
-	LineSegment::LineSegment(float x0, float y0, float x1, float y1) : p0(x0, y0), p1(x1, y1)
-	{
-	}
-
 	LineSegment::LineSegment(Vector3 p0, Vector3 p1) : p0(p0), p1(p1)
 	{
 	}
@@ -38,12 +35,8 @@ namespace Geometry
 
 	LineSegment LineSegment::PerturbVertices(float perturbation)
 	{
-		std::random_device rd;
-		std::mt19937 mt(rd());
-		std::uniform_real_distribution<float> dist(-perturbation, perturbation);
-
 		return LineSegment(
-			this->p0.x + dist(mt), this->p0.y + dist(mt),
-			this->p1.x + dist(mt), this->p1.y + dist(mt));
+			Vector3(this->p0.x + PerturbStandard(perturbation), this->p0.y + PerturbStandard(perturbation)),
+			Vector3(this->p1.x + PerturbStandard(perturbation), this->p1.y + PerturbStandard(perturbation)));
 	}
 }

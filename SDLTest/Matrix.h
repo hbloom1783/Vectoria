@@ -22,7 +22,7 @@ namespace Geometry
 
 		Vector2 Normalize() const;
 
-		const static Vector2 origin;
+		const static Vector2 Origin;
 	};
 
 	struct Matrix2
@@ -62,7 +62,9 @@ namespace Geometry
 
 		Vector3 Normalize() const;
 
-		const static Vector3 origin;
+		Vector2 Project() const;
+
+		const static Vector3 Origin;
 	};
 
 	struct Matrix3

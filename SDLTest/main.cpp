@@ -36,6 +36,8 @@ using Threads::Thread;
 using Threads::Mutex;
 using Threads::LockHold;
 
+#include "Perturbation.h"
+
 const static int windowX = 800;
 const static int windowY = 600;
 
@@ -71,8 +73,8 @@ private:
 
 				glyph.rotation = frameCount++;
 				float perturbation = 1.0 - abs(cos(glyph.rotation * (M_PI/360.0)));
-				glyph.huePerturbation = perturbation * 90;
-				glyph.vertexPerturbation = perturbation * 4;
+				//glyph.huePerturbation = perturbation * 45;
+				//glyph.vertexPerturbation = perturbation * 4;
 			}
 
 			_sleep(sleepDuration);
@@ -106,8 +108,8 @@ int main(int argc, char* argv[])
 	Model sun;
 
 	HSVAColor sunWhite = HSVAColor(0, 0, 1, 1);
-	sun.prims.push_back(Primitive(LineSegment(se, nw), sunWhite));
-	sun.prims.push_back(Primitive(LineSegment(sw, ne), sunWhite));
+	sun.AddLineSegment("nwse", LineSegment(nw, se), sunWhite);
+	sun.AddLineSegment("nesw", LineSegment(ne, sw), sunWhite);
 	sun.scale = 0.1;
 	sun.offset = Vector2(windowX - 15, windowY - 15);
 
@@ -124,33 +126,50 @@ int main(int argc, char* argv[])
 
 	HSVAColor pPaint = HSVAColor(-15, 0.90, 1, 1);
 	HSVAColor pLine = HSVAColor(1, .9, 1, 1);
+
+	Model psw;
+	psw.AddTriangle("t1", Triangle(pc3, pc2, p2), pPaint);
+	psw.AddTriangle("t2", Triangle(pc3, p2, p1), pPaint);
+	psw.AddLineSegment("outer1", LineSegment(p1, p2), pLine);
+	psw.AddLineSegment("outer2", LineSegment(p2, p3), pLine);
+	psw.AddLineSegment("inner", LineSegment(pc2, pc3), pLine);
+	psw.huePerturbation = 35;
+
+	Model pnw;
+	pnw.AddTriangle("t1", Triangle(pc0, pc3, p1), pPaint);
+	pnw.AddTriangle("t2", Triangle(pc0, p1, p0), pPaint);
+	pnw.AddLineSegment("outer", LineSegment(p0, p1), pLine);
+	pnw.AddLineSegment("inner", LineSegment(pc3, pc0), pLine);
+	pnw.huePerturbation = 35;
+
+	Model pne;
+	pne.AddTriangle("t1", Triangle(pc1, pc0, p0), pPaint);
+	pne.AddTriangle("t2", Triangle(pc1, p0, p4), pPaint);
+	pne.AddLineSegment("outer", LineSegment(p4, p0), pLine);
+	pne.AddLineSegment("inner", LineSegment(pc0, pc1), pLine);
+	pne.huePerturbation = 35;
+
+	Model pse;
+	pse.AddTriangle("t1", Triangle(pc2, pc1, p4), pPaint);
+	pse.AddTriangle("t2", Triangle(pc2, p4, p3), pPaint);
+	pse.AddLineSegment("outer", LineSegment(p3, p4), pLine);
+	pse.AddLineSegment("inner", LineSegment(pc1, pc2), pLine);
+	pse.huePerturbation = 35;
+
 	HSVAColor pInnerLine = HSVAColor(1, .9, 1, 0.25);
 
 	Model p;
-	p.prims.push_back(Primitive(Triangle(pc0, pc3, p1), pPaint));
-	p.prims.push_back(Primitive(Triangle(pc0, p1, p0), pPaint));
-	p.prims.push_back(Primitive(Triangle(pc1, pc0, p0), pPaint));
-	p.prims.push_back(Primitive(Triangle(pc1, p0, p4), pPaint));
-	p.prims.push_back(Primitive(Triangle(pc2, pc1, p4), pPaint));
-	p.prims.push_back(Primitive(Triangle(pc2, p4, p3), pPaint));
-	p.prims.push_back(Primitive(Triangle(pc3, pc2, p2), pPaint));
-	p.prims.push_back(Primitive(Triangle(pc3, p2, p1), pPaint));
-	p.prims.push_back(Primitive(LineSegment(p0, p1), pLine));
-	p.prims.push_back(Primitive(LineSegment(p1, p2), pLine));
-	p.prims.push_back(Primitive(LineSegment(p2, p3), pLine));
-	p.prims.push_back(Primitive(LineSegment(p3, p4), pLine));
-	p.prims.push_back(Primitive(LineSegment(p4, p0), pLine));
-	p.prims.push_back(Primitive(LineSegment(pc0, pc1), pLine));
-	p.prims.push_back(Primitive(LineSegment(pc1, pc2), pLine));
-	p.prims.push_back(Primitive(LineSegment(pc2, pc3), pLine));
-	p.prims.push_back(Primitive(LineSegment(pc3, pc0), pLine));
-	p.prims.push_back(Primitive(LineSegment(pc0, p0), pInnerLine));
-	p.prims.push_back(Primitive(LineSegment(pc1, p4), pInnerLine));
-	p.prims.push_back(Primitive(LineSegment(pc2, p3), pInnerLine));
-	p.prims.push_back(Primitive(LineSegment(pc3, p1), pInnerLine));
+	p.AddSubmodel("sw", psw);
+	p.AddSubmodel("nw", pnw);
+	p.AddSubmodel("ne", pne);
+	p.AddSubmodel("se", pse);
+	p.AddLineSegment("d1", LineSegment(pc0, p0), pInnerLine);
+	p.AddLineSegment("d2", LineSegment(pc1, p4), pInnerLine);
+	p.AddLineSegment("d3", LineSegment(pc2, p3), pInnerLine);
+	p.AddLineSegment("d4", LineSegment(pc3, p1), pInnerLine);
 	p.scale = 30;
 	p.offset = Vector2(windowX / 2, windowY / 2);
-	//p.vertexPerturbation = 5;
+	//p.huePerturbation = 45;
 
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
@@ -170,6 +189,8 @@ int main(int argc, char* argv[])
 			{
 				SDL_Event event;
 
+				Perturbation::PerturbUniform(1);
+
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 				SDL_RenderClear(renderer);
 
@@ -177,7 +198,8 @@ int main(int argc, char* argv[])
 				animator.glyphGuard.Lock();
 				p.Render(renderer, sun.offset);
 				animator.glyphGuard.Unlock();
-				sun.Render(renderer, Vector2::origin);
+
+				sun.Render(renderer, Vector2::Origin);
 
 				SDL_RenderPresent(renderer);
 
