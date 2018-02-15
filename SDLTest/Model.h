@@ -9,6 +9,9 @@ using std::map;
 #include <list>
 using std::list;
 
+#include <string>
+using std::string;
+
 #include "SDL.h"
 
 #include "Matrix.h"

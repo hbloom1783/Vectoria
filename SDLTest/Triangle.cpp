@@ -63,5 +63,5 @@ namespace Geometry
 			Vector2(this->p0.x + PerturbStandard(perturbation), this->p0.y + PerturbStandard(perturbation)).Extend(),
 			Vector2(this->p1.x + PerturbStandard(perturbation), this->p1.y + PerturbStandard(perturbation)).Extend(),
 			Vector2(this->p2.x + PerturbStandard(perturbation), this->p2.y + PerturbStandard(perturbation)).Extend());
-	}
+	}*/
 }

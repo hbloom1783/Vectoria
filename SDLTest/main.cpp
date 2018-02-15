@@ -11,7 +11,7 @@ using XmlReader::LoadXmlFile;
 using Geometry::Matrix2;
 
 #include "Color.h"
-using Models::HSVAColor;
+using Color::HSVAColor;
 
 #include "Renderable.h"
 using Geometry::Renderable;
@@ -29,7 +29,6 @@ using Geometry::LineSegment;
 #include "Model.h"
 using Models::Model;
 using Models::Primitive;
-using Models::HSVAColor;
 
 #include "Threading.h"
 using Threads::Thread;
@@ -97,9 +96,16 @@ void ScreenShot(SDL_Renderer* renderer)
 	SDL_FreeSurface(sshot);
 }
 
+void rect(SDL_Renderer* renderer, HSVAColor color, int x1, int y1, int x2, int y2)
+{
+	SDL_Color comp = color.Compile();
+	filledTrigonRGBA(renderer, x1, y1, x1, y2, x2, y1, comp.r, comp.g, comp.b, comp.a);
+	filledTrigonRGBA(renderer, x2, y2, x2, y1, x1, y2, comp.r, comp.g, comp.b, comp.a);
+}
+
 int main(int argc, char* argv[])
 {
-	Vector3 c(0, 0, 100);
+	/*Vector3 c(0, 0, 100);
 	Vector3 nw(-100, -100, 0);
 	Vector3 ne(100, -100, 0);
 	Vector3 se(100, 100, 0);
@@ -168,15 +174,13 @@ int main(int argc, char* argv[])
 	p.AddLineSegment("d3", LineSegment(pc2, p3), pInnerLine);
 	p.AddLineSegment("d4", LineSegment(pc3, p1), pInnerLine);
 	p.scale = 30;
-	p.offset = Vector2(windowX / 2, windowY / 2);
-	//p.huePerturbation = 45;
-
+	p.offset = Vector2(windowX / 2, windowY / 2);*/
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
 		SDL_Window* window = NULL;
 		SDL_Renderer* renderer = NULL;
-		Animator animator(p);
+		//Animator animator(p);
 
 		if (SDL_CreateWindowAndRenderer(windowX, windowY, SDL_WINDOW_BORDERLESS, &window, &renderer) == 0)
 		{
@@ -184,22 +188,40 @@ int main(int argc, char* argv[])
 			bool pause = false;
 			int frameCount = 0;
 			SDL_bool done = SDL_FALSE;
-			animator.Start();
+			//animator.Start();
 			while (!done)
 			{
 				SDL_Event event;
 
-				Perturbation::PerturbUniform(1);
+				//Perturbation::PerturbUniform(1);
 
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 				SDL_RenderClear(renderer);
 
-				// render stuff here
-				animator.glyphGuard.Lock();
-				p.Render(renderer, sun.offset);
-				animator.glyphGuard.Unlock();
+				rect(renderer, HSVAColor::Red,       0, 0, 100, 100);
+				rect(renderer, HSVAColor::Yellow,  100, 0, 200, 100);
+				rect(renderer, HSVAColor::Green,   200, 0, 300, 100);
+				rect(renderer, HSVAColor::Blue,    300, 0, 400, 100);
+				rect(renderer, HSVAColor::Cyan,    400, 0, 500, 100);
+				rect(renderer, HSVAColor::Magenta, 500, 0, 600, 100);
+				rect(renderer, HSVAColor::White,   600, 0, 700, 100);
+				rect(renderer, HSVAColor::Black,   700, 0, 800, 100);
 
-				sun.Render(renderer, Vector2::Origin);
+				rect(renderer, HSVAColor::dkRed,       0, 100, 100, 200);
+				rect(renderer, HSVAColor::dkYellow,  100, 100, 200, 200);
+				rect(renderer, HSVAColor::dkGreen,   200, 100, 300, 200);
+				rect(renderer, HSVAColor::dkBlue,    300, 100, 400, 200);
+				rect(renderer, HSVAColor::dkCyan,    400, 100, 500, 200);
+				rect(renderer, HSVAColor::dkMagenta, 500, 100, 600, 200);
+				rect(renderer, HSVAColor::dkWhite,   600, 100, 700, 200);
+				rect(renderer, HSVAColor::dkBlack,   700, 100, 800, 200);
+
+				// render stuff here
+				//animator.glyphGuard.Lock();
+				//p.Render(renderer, sun.offset);
+				//animator.glyphGuard.Unlock();
+
+				//sun.Render(renderer, Vector2::Origin);
 
 				SDL_RenderPresent(renderer);
 
@@ -217,7 +239,7 @@ int main(int argc, char* argv[])
 							done = SDL_TRUE;
 							break;
 						case SDL_SCANCODE_P:
-							animator.paused = !animator.paused;
+							//animator.paused = !animator.paused;
 							break;
 						case SDL_SCANCODE_PRINTSCREEN:
 							ScreenShot(renderer);
@@ -228,8 +250,8 @@ int main(int argc, char* argv[])
 
 				frameCount++;
 			}
-			animator.StopGraceful();
-			animator.Wait();
+			//animator.StopGraceful();
+			//animator.Wait();
 		}
 
 		if (renderer)

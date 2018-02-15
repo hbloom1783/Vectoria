@@ -9,9 +9,6 @@ using Geometry::Matrix2;
 using Geometry::Matrix3;
 using Geometry::CalculateAngle;
 
-#include "Perturbation.h"
-using Perturbation::PerturbStandard;
-
 #include "Color.h"
 
 namespace Models
@@ -120,7 +117,7 @@ namespace Models
 					transform,
 					offset);
 			}
-		}
+		}*/
 	}
 
 	Model& Model::GetRootModel()

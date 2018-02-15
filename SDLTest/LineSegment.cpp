@@ -2,9 +2,6 @@
 
 #include "SDL2_gfxPrimitives.h"
 
-#include "Perturbation.h"
-using Perturbation::PerturbStandard;
-
 namespace Geometry
 {
 	LineSegment::LineSegment(Vector3 p0, Vector3 p1) : p0(p0), p1(p1)
@@ -38,5 +35,5 @@ namespace Geometry
 		return LineSegment(
 			Vector3(this->p0.x + PerturbStandard(perturbation), this->p0.y + PerturbStandard(perturbation)),
 			Vector3(this->p1.x + PerturbStandard(perturbation), this->p1.y + PerturbStandard(perturbation)));
-	}
+	}*/
 }
