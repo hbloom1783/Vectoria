@@ -109,20 +109,20 @@ namespace Color
 	const HSVAColor HSVAColor::Black =
 		HSVAColor(000.0, 1.0, 0.0, 1.0);
 
-	const HSVAColor HSVAColor::dkRed =
+	const HSVAColor HSVAColor::DkRed =
 		HSVAColor(000.0, 1.0, 0.5, 1.0);
-	const HSVAColor HSVAColor::dkYellow =
+	const HSVAColor HSVAColor::DkYellow =
 		HSVAColor(060.0, 1.0, 0.5, 1.0);
-	const HSVAColor HSVAColor::dkGreen =
+	const HSVAColor HSVAColor::DkGreen =
 		HSVAColor(120.0, 1.0, 0.5, 1.0);
-	const HSVAColor HSVAColor::dkCyan =
+	const HSVAColor HSVAColor::DkCyan =
 		HSVAColor(180.0, 1.0, 0.5, 1.0);
-	const HSVAColor HSVAColor::dkBlue =
+	const HSVAColor HSVAColor::DkBlue =
 		HSVAColor(240.0, 1.0, 0.5, 1.0);
-	const HSVAColor HSVAColor::dkMagenta =
+	const HSVAColor HSVAColor::DkMagenta =
 		HSVAColor(300.0, 1.0, 0.5, 1.0);
-	const HSVAColor HSVAColor::dkWhite =
+	const HSVAColor HSVAColor::DkWhite =
 		HSVAColor(000.0, 0.0, 0.75, 1.0);
-	const HSVAColor HSVAColor::dkBlack =
+	const HSVAColor HSVAColor::DkBlack =
 		HSVAColor(000.0, 0.0, 0.25, 1.0);
 }

@@ -18,6 +18,24 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Color.h" />
+    <ClInclude Include="LineSegment.h" />
+    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="PerlinNoise.h" />
+    <ClInclude Include="Perturbation.h" />
+    <ClInclude Include="Renderable.h" />
+    <ClInclude Include="Threading.h" />
+    <ClInclude Include="Triangle.h" />
+    <ClInclude Include="XmlReader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Color.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="Perturbation.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{9037321C-4866-41C7-B214-9CE780E1EC68}</ProjectGuid>
@@ -150,21 +168,6 @@
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_gfx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Color.h" />
-    <ClInclude Include="LineSegment.h" />
-    <ClInclude Include="Matrix.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="Perturbation.h" />
-    <ClInclude Include="Renderable.h" />
-    <ClInclude Include="Threading.h" />
-    <ClInclude Include="Triangle.h" />
-    <ClInclude Include="XmlReader.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Color.cpp" />
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

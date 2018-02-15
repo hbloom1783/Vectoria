@@ -96,11 +96,29 @@ void ScreenShot(SDL_Renderer* renderer)
 	SDL_FreeSurface(sshot);
 }
 
-void rect(SDL_Renderer* renderer, HSVAColor color, int x1, int y1, int x2, int y2)
+static Perturb::PerturbPerlin perlin = Perturb::PerturbPerlin(25);
+
+void filledRectRGBA(SDL_Renderer* renderer, HSVAColor color, int x, int y, int w, int h)
 {
 	SDL_Color comp = color.Compile();
-	filledTrigonRGBA(renderer, x1, y1, x1, y2, x2, y1, comp.r, comp.g, comp.b, comp.a);
-	filledTrigonRGBA(renderer, x2, y2, x2, y1, x1, y2, comp.r, comp.g, comp.b, comp.a);
+	Vector2 topleft = perlin.PerturbVector(Vector2(x, y));
+	Vector2 topright = perlin.PerturbVector(Vector2(x + w, y));
+	Vector2 bottomleft = perlin.PerturbVector(Vector2(x, y + h));
+	Vector2 bottomright = perlin.PerturbVector(Vector2(x + w, y + h));
+
+	filledTrigonRGBA(
+		renderer,
+		topleft.x, topleft.y,
+		bottomleft.x, bottomleft.y,
+		topright.x, topright.y,
+		comp.r, comp.g, comp.b, comp.a);
+
+	filledTrigonRGBA(
+		renderer,
+		bottomright.x, bottomright.y,
+		topright.x, topright.y,
+		bottomleft.x, bottomleft.y,
+		comp.r, comp.g, comp.b, comp.a);
 }
 
 int main(int argc, char* argv[])
@@ -181,6 +199,7 @@ int main(int argc, char* argv[])
 		SDL_Window* window = NULL;
 		SDL_Renderer* renderer = NULL;
 		//Animator animator(p);
+		//Perturb::PerturbPerlin perlin = Perturb::PerturbPerlin(0);
 
 		if (SDL_CreateWindowAndRenderer(windowX, windowY, SDL_WINDOW_BORDERLESS, &window, &renderer) == 0)
 		{
@@ -188,33 +207,52 @@ int main(int argc, char* argv[])
 			bool pause = false;
 			int frameCount = 0;
 			SDL_bool done = SDL_FALSE;
-			//animator.Start();
 			while (!done)
 			{
 				SDL_Event event;
 
-				//Perturbation::PerturbUniform(1);
-
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 				SDL_RenderClear(renderer);
 
-				rect(renderer, HSVAColor::Red,       0, 0, 100, 100);
-				rect(renderer, HSVAColor::Yellow,  100, 0, 200, 100);
-				rect(renderer, HSVAColor::Green,   200, 0, 300, 100);
-				rect(renderer, HSVAColor::Blue,    300, 0, 400, 100);
-				rect(renderer, HSVAColor::Cyan,    400, 0, 500, 100);
-				rect(renderer, HSVAColor::Magenta, 500, 0, 600, 100);
-				rect(renderer, HSVAColor::White,   600, 0, 700, 100);
-				rect(renderer, HSVAColor::Black,   700, 0, 800, 100);
+				HSVAColor colorList[] = {
+					HSVAColor::Red,
+					HSVAColor::Yellow,
+					HSVAColor::Green,
+					HSVAColor::Blue,
+					HSVAColor::Cyan,
+					HSVAColor::Magenta,
+					HSVAColor::White,
+					HSVAColor::Black,
+					HSVAColor::DkRed,
+					HSVAColor::DkYellow,
+					HSVAColor::DkGreen,
+					HSVAColor::DkBlue,
+					HSVAColor::DkCyan,
+					HSVAColor::DkMagenta,
+					HSVAColor::DkWhite,
+					HSVAColor::DkBlack,
+				};
 
-				rect(renderer, HSVAColor::dkRed,       0, 100, 100, 200);
-				rect(renderer, HSVAColor::dkYellow,  100, 100, 200, 200);
-				rect(renderer, HSVAColor::dkGreen,   200, 100, 300, 200);
-				rect(renderer, HSVAColor::dkBlue,    300, 100, 400, 200);
-				rect(renderer, HSVAColor::dkCyan,    400, 100, 500, 200);
-				rect(renderer, HSVAColor::dkMagenta, 500, 100, 600, 200);
-				rect(renderer, HSVAColor::dkWhite,   600, 100, 700, 200);
-				rect(renderer, HSVAColor::dkBlack,   700, 100, 800, 200);
+				perlin = Perturb::PerturbPerlin(5);
+				for (int idx = 0; idx < 48; idx++)
+				{
+					filledRectRGBA(
+						renderer,
+						colorList[idx % 16], 
+						(idx % 8) * 100,
+						(idx / 8) * 100,
+						100, 100);
+				}
+
+				/*SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+				for (int x = 0; x < windowX; x += 25)
+				{
+					for (int y = 0; y < windowY; y += 25)
+					{
+						Vector2 offset = perlin.PerturbVector(Vector2(x, y));
+						SDL_RenderDrawLine(renderer, x, y, offset.x, offset.y);
+					}
+				}*/
 
 				// render stuff here
 				//animator.glyphGuard.Lock();

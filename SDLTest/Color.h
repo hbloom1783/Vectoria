@@ -23,14 +23,14 @@ namespace Color
 		const static HSVAColor White;
 		const static HSVAColor Black;
 
-		const static HSVAColor dkRed;
-		const static HSVAColor dkYellow;
-		const static HSVAColor dkGreen;
-		const static HSVAColor dkCyan;
-		const static HSVAColor dkBlue;
-		const static HSVAColor dkMagenta;
-		const static HSVAColor dkWhite;
-		const static HSVAColor dkBlack;
+		const static HSVAColor DkRed;
+		const static HSVAColor DkYellow;
+		const static HSVAColor DkGreen;
+		const static HSVAColor DkCyan;
+		const static HSVAColor DkBlue;
+		const static HSVAColor DkMagenta;
+		const static HSVAColor DkWhite;
+		const static HSVAColor DkBlack;
 	private:
 		float h, s, v, a;
 	};
