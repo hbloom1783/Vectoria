@@ -91,6 +91,7 @@ namespace siv
 
 		double noise(double x, double y, double z) const
 		{
+
 			const std::int32_t X = static_cast<std::int32_t>(std::floor(x)) & 255;
 			const std::int32_t Y = static_cast<std::int32_t>(std::floor(y)) & 255;
 			const std::int32_t Z = static_cast<std::int32_t>(std::floor(z)) & 255;

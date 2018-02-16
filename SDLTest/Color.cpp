@@ -24,8 +24,18 @@ namespace Color
 	{
 		SDL_Color output = { 0, 0, 0, this->a * 0xFF };
 
-		int hueSegment = int(this->h / 60.0f);
-		float hueLerp = (this->h / 60.0f) - hueSegment;
+		float modHue = this->h;
+		while (modHue < 0)
+		{
+			modHue += 360;
+		}
+		while (modHue > 360)
+		{
+			modHue -= 360;
+		}
+
+		int hueSegment = int(modHue / 60.0f);
+		float hueLerp = (modHue / 60.0f) - hueSegment;
 		if ((hueSegment % 2) == 1)
 			hueLerp = 1 - hueLerp;
 
@@ -83,7 +93,16 @@ namespace Color
 		return output;
 	}
 
-	HSVAColor HSVAColor::Lerp(float sLerp, float vLerp, float aLerp) const
+	HSVAColor HSVAColor::DeltaH(float hDelta) const
+	{
+		return HSVAColor(
+			this->h + hDelta,
+			this->s,
+			this->v,
+			this->a);
+	}
+
+	HSVAColor HSVAColor::LerpSV(float sLerp, float vLerp, float aLerp) const
 	{
 		return HSVAColor(
 			this->h,

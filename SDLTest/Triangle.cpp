@@ -2,9 +2,6 @@
 
 #include "SDL2_gfxPrimitives.h"
 
-#include "Perturbation.h"
-using Perturbation::PerturbStandard;
-
 namespace Geometry
 {
 	Triangle::Triangle(
@@ -57,11 +54,11 @@ namespace Geometry
 			color.r, color.g, color.b, color.a);
 	}
 
-	Triangle Triangle::PerturbVertices(float perturbation)
+	Triangle Triangle::PerturbVertices(const PerturbPerlin& perturb)
 	{
 		return Triangle(
-			Vector2(this->p0.x + PerturbStandard(perturbation), this->p0.y + PerturbStandard(perturbation)).Extend(),
-			Vector2(this->p1.x + PerturbStandard(perturbation), this->p1.y + PerturbStandard(perturbation)).Extend(),
-			Vector2(this->p2.x + PerturbStandard(perturbation), this->p2.y + PerturbStandard(perturbation)).Extend());
-	}*/
+			perturb.PerturbVector(this->p0),
+			perturb.PerturbVector(this->p1),
+			perturb.PerturbVector(this->p2));
+	}
 }

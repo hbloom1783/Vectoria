@@ -29,6 +29,7 @@ using Geometry::Triangle;
 using Geometry::LineSegment;
 
 #include "Color.h"
+using Color::HSVAColor;
 
 namespace Models
 {
@@ -39,7 +40,12 @@ namespace Models
 	public:
 		Model();
 
-		void Render(SDL_Renderer* renderer, Vector2 sunPos, Matrix3 parentTransform = Matrix3::Identity, Vector2 parentOffset = Vector2::Origin);
+		void Render(
+			SDL_Renderer* renderer,
+			Vector2 sunPos,
+			Matrix3 parentTransform = Matrix3::Identity,
+			Vector2 parentOffset = Vector2::Origin,
+			PerturbPerlin* parentPerturb = NULL);
 
 		Model* parent;
 		Model& GetRootModel();

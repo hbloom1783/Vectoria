@@ -30,10 +30,10 @@ namespace Geometry
 			color.r, color.g, color.b, color.a);
 	}
 
-	LineSegment LineSegment::PerturbVertices(float perturbation)
+	LineSegment LineSegment::PerturbVertices(const PerturbPerlin& perturb)
 	{
 		return LineSegment(
-			Vector3(this->p0.x + PerturbStandard(perturbation), this->p0.y + PerturbStandard(perturbation)),
-			Vector3(this->p1.x + PerturbStandard(perturbation), this->p1.y + PerturbStandard(perturbation)));
-	}*/
+			perturb.PerturbVector(this->p0),
+			perturb.PerturbVector(this->p1));
+	}
 }

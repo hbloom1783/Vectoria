@@ -72,8 +72,8 @@ private:
 
 				glyph.rotation = frameCount++;
 				float perturbation = 1.0 - abs(cos(glyph.rotation * (M_PI/360.0)));
-				//glyph.huePerturbation = perturbation * 45;
-				//glyph.vertexPerturbation = perturbation * 4;
+				glyph.huePerturbation = perturbation * 45;
+				glyph.vertexPerturbation = perturbation * 25;
 			}
 
 			_sleep(sleepDuration);
@@ -123,7 +123,7 @@ void filledRectRGBA(SDL_Renderer* renderer, HSVAColor color, int x, int y, int w
 
 int main(int argc, char* argv[])
 {
-	/*Vector3 c(0, 0, 100);
+	Vector3 c(0, 0, 100);
 	Vector3 nw(-100, -100, 0);
 	Vector3 ne(100, -100, 0);
 	Vector3 se(100, 100, 0);
@@ -192,14 +192,13 @@ int main(int argc, char* argv[])
 	p.AddLineSegment("d3", LineSegment(pc2, p3), pInnerLine);
 	p.AddLineSegment("d4", LineSegment(pc3, p1), pInnerLine);
 	p.scale = 30;
-	p.offset = Vector2(windowX / 2, windowY / 2);*/
+	p.offset = Vector2(windowX / 2, windowY / 2);
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
 		SDL_Window* window = NULL;
 		SDL_Renderer* renderer = NULL;
-		//Animator animator(p);
-		//Perturb::PerturbPerlin perlin = Perturb::PerturbPerlin(0);
+		Animator animator(p);
 
 		if (SDL_CreateWindowAndRenderer(windowX, windowY, SDL_WINDOW_BORDERLESS, &window, &renderer) == 0)
 		{
@@ -207,6 +206,7 @@ int main(int argc, char* argv[])
 			bool pause = false;
 			int frameCount = 0;
 			SDL_bool done = SDL_FALSE;
+			animator.Start();
 			while (!done)
 			{
 				SDL_Event event;
@@ -214,7 +214,7 @@ int main(int argc, char* argv[])
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 				SDL_RenderClear(renderer);
 
-				HSVAColor colorList[] = {
+				/*HSVAColor colorList[] = {
 					HSVAColor::Red,
 					HSVAColor::Yellow,
 					HSVAColor::Green,
@@ -244,7 +244,7 @@ int main(int argc, char* argv[])
 						100, 100);
 				}
 
-				/*SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+				SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 				for (int x = 0; x < windowX; x += 25)
 				{
 					for (int y = 0; y < windowY; y += 25)
@@ -255,11 +255,11 @@ int main(int argc, char* argv[])
 				}*/
 
 				// render stuff here
-				//animator.glyphGuard.Lock();
-				//p.Render(renderer, sun.offset);
-				//animator.glyphGuard.Unlock();
+				animator.glyphGuard.Lock();
+				p.Render(renderer, sun.offset);
+				animator.glyphGuard.Unlock();
 
-				//sun.Render(renderer, Vector2::Origin);
+				sun.Render(renderer, Vector2::Origin);
 
 				SDL_RenderPresent(renderer);
 
@@ -277,7 +277,7 @@ int main(int argc, char* argv[])
 							done = SDL_TRUE;
 							break;
 						case SDL_SCANCODE_P:
-							//animator.paused = !animator.paused;
+							animator.paused = !animator.paused;
 							break;
 						case SDL_SCANCODE_PRINTSCREEN:
 							ScreenShot(renderer);
@@ -288,8 +288,8 @@ int main(int argc, char* argv[])
 
 				frameCount++;
 			}
-			//animator.StopGraceful();
-			//animator.Wait();
+			animator.StopGraceful();
+			animator.Wait();
 		}
 
 		if (renderer)

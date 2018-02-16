@@ -5,6 +5,9 @@
 #include "Matrix.h"
 #include "Renderable.h"
 
+#include "Perturbation.h"
+using Perturb::PerturbPerlin;
+
 namespace Geometry
 {
 	class LineSegment : public Renderable
@@ -21,7 +24,7 @@ namespace Geometry
 			Vector2 offset,
 			SDL_Color color);
 
-		LineSegment PerturbVertices(float perturbation);
+		LineSegment PerturbVertices(const PerturbPerlin& perturb);
 
 	private:
 		Vector3 p0;

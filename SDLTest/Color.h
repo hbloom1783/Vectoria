@@ -8,11 +8,12 @@ namespace Color
 	{
 	public:
 		HSVAColor(float h = 0.0f, float s = 1.0f, float v = 1.0f, float a = 1.0f);
-		HSVAColor(const SDL_Color& other);
+		//HSVAColor(const SDL_Color& other);
 
 		SDL_Color Compile() const;
 
-		HSVAColor Lerp(float sLerp, float vLerp, float aLerp = 1.0f) const;
+		HSVAColor DeltaH(float hDelta) const;
+		HSVAColor LerpSV(float sLerp, float vLerp, float aLerp = 1.0f) const;
 
 		const static HSVAColor Red;
 		const static HSVAColor Yellow;

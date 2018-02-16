@@ -11,6 +11,9 @@ using Geometry::CalculateAngle;
 
 #include "Color.h"
 
+#include "Perturbation.h"
+using Perturb::PerturbNormal;
+
 namespace Models
 {
 	#pragma region Model
@@ -64,11 +67,22 @@ namespace Models
 		this->drawOrder.remove(name);
 	}
 
-	void Model::Render(SDL_Renderer* renderer, Vector2 sunPos, Matrix3 parentTransform, Vector2 parentOffset)
+	void Model::Render(
+		SDL_Renderer* renderer,
+		Vector2 sunPos,
+		Matrix3 parentTransform,
+		Vector2 parentOffset,
+		PerturbPerlin* parentPerturb)
 	{
 		Matrix3 transform = parentTransform * Matrix2::RotationMatrix(this->rotation).Extend() * Matrix3::ScaleMatrix(this->scale);
 		Vector2 offset = parentOffset + this->offset;
-		float hueDelta = PerturbStandard(this->huePerturbation);
+		float hueDelta = PerturbNormal(this->huePerturbation);
+
+		PerturbPerlin* perlin;
+		if (parentPerturb == NULL)
+			perlin = new PerturbPerlin(this->vertexPerturbation / this->scale);
+		else
+			perlin = parentPerturb;
 
 		for (auto iter = this->drawOrder.begin(); iter != this->drawOrder.end(); iter++)
 		{
@@ -77,11 +91,11 @@ namespace Models
 
 			if (prim.type == primLineSegment)
 			{
-				prim.asLine.PerturbVertices(this->vertexPerturbation / this->scale).Render(
+				prim.asLine.PerturbVertices(*perlin).Render(
 					renderer,
 					transform,
 					offset,
-					prim.color.ShiftHue(hueDelta).Compile());
+					prim.color.DeltaH(hueDelta).Compile());
 			}
 			else if (prim.type == primTriangle)
 			{
@@ -103,11 +117,11 @@ namespace Models
 				litAngle = (sqrt(litAngle) + (litAngle*litAngle)) / 2;
 				//litAngle = sqrt(sqrt(litAngle));
 
-				prim.asTri.Render(
+				prim.asTri.PerturbVertices(*perlin).Render(
 					renderer,
 					transform,
 					offset,
-					prim.color.Lerp(1.0, litAngle).ShiftHue(hueDelta).Compile());
+					prim.color.LerpSV(1.0, litAngle).DeltaH(hueDelta).Compile());
 			}
 			else if (prim.type == primSubmodel)
 			{
@@ -115,9 +129,10 @@ namespace Models
 					renderer,
 					sunPos,
 					transform,
-					offset);
+					offset,
+					perlin);
 			}
-		}*/
+		}
 	}
 
 	Model& Model::GetRootModel()
