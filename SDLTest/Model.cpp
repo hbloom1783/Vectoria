@@ -135,6 +135,68 @@ namespace Models
 		}
 	}
 
+	void Model::LoadXml(const XmlNode& modelNode, const RefData& refData)
+	{
+		RefData myRefData = refData;
+
+		vector<XmlNode> children = modelNode.GetChildren();
+		for (auto iter = children.begin(); iter != children.end(); iter++)
+		{
+			if (iter->GetName() == "point")
+			{
+				myRefData.points[iter->GetAttribute("id")] = Vector3(
+					iter->GetAttribute("x").AsFloat(),
+					iter->GetAttribute("y").AsFloat(),
+					iter->GetAttribute("z", "0").AsFloat());
+			}
+			else if (iter->GetName() == "color")
+			{
+				myRefData.colors[iter->GetAttribute("id")] = HSVAColor(
+					iter->GetAttribute("h").AsFloat(),
+					iter->GetAttribute("s", "1").AsFloat(),
+					iter->GetAttribute("v", "1").AsFloat(),
+					iter->GetAttribute("a", "1").AsFloat());
+			}
+			else if (iter->GetName() == "linesegment")
+			{
+				// Deref points
+				Vector3 p0 = myRefData.points.at(iter->GetAttribute("p0"));
+				Vector3 p1 = myRefData.points.at(iter->GetAttribute("p1"));
+
+				// Deref color
+				HSVAColor color = myRefData.colors.at(iter->GetAttribute("color"));
+
+				this->AddLineSegment(
+					iter->GetAttribute("id"),
+					LineSegment(p0, p1),
+					color);
+			}
+			else if (iter->GetName() == "triangle")
+			{
+				// Deref points
+				Vector3 p0 = myRefData.points.at(iter->GetAttribute("p0"));
+				Vector3 p1 = myRefData.points.at(iter->GetAttribute("p1"));
+				Vector3 p2 = myRefData.points.at(iter->GetAttribute("p2"));
+
+				// Deref color
+				HSVAColor color = myRefData.colors.at(iter->GetAttribute("color"));
+
+				this->AddTriangle(
+					iter->GetAttribute("id"),
+					Triangle(p0, p1, p2),
+					color);
+			}
+			else if (iter->GetName() == "model")
+			{
+				Model subModel;
+
+				subModel.LoadXml(*iter, myRefData);
+
+				this->AddSubmodel(iter->GetAttribute("id"), subModel);
+			}
+		}
+	}
+
 	Model& Model::GetRootModel()
 	{
 		if (this->parent == NULL)

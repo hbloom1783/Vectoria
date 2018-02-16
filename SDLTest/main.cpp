@@ -137,60 +137,8 @@ int main(int argc, char* argv[])
 	sun.scale = 0.1;
 	sun.offset = Vector2(windowX - 15, windowY - 15);
 
-	Vector3 p0(0, -3, 0);
-	Vector3 p1(-3, 0, 0);
-	Vector3 p2(0, 7, -2);
-	Vector3 p3(0, 3, 0);
-	Vector3 p4(3, 0, 0);
-
-	Vector3 pc0(0, -1, 1);
-	Vector3 pc1(1, 0, 1);
-	Vector3 pc2(0, 1, 1);
-	Vector3 pc3(-1, 0, 1);
-
-	HSVAColor pPaint = HSVAColor(-15, 0.90, 1, 1);
-	HSVAColor pLine = HSVAColor(1, .9, 1, 1);
-
-	Model psw;
-	psw.AddTriangle("t1", Triangle(pc3, pc2, p2), pPaint);
-	psw.AddTriangle("t2", Triangle(pc3, p2, p1), pPaint);
-	psw.AddLineSegment("outer1", LineSegment(p1, p2), pLine);
-	psw.AddLineSegment("outer2", LineSegment(p2, p3), pLine);
-	psw.AddLineSegment("inner", LineSegment(pc2, pc3), pLine);
-	psw.huePerturbation = 35;
-
-	Model pnw;
-	pnw.AddTriangle("t1", Triangle(pc0, pc3, p1), pPaint);
-	pnw.AddTriangle("t2", Triangle(pc0, p1, p0), pPaint);
-	pnw.AddLineSegment("outer", LineSegment(p0, p1), pLine);
-	pnw.AddLineSegment("inner", LineSegment(pc3, pc0), pLine);
-	pnw.huePerturbation = 35;
-
-	Model pne;
-	pne.AddTriangle("t1", Triangle(pc1, pc0, p0), pPaint);
-	pne.AddTriangle("t2", Triangle(pc1, p0, p4), pPaint);
-	pne.AddLineSegment("outer", LineSegment(p4, p0), pLine);
-	pne.AddLineSegment("inner", LineSegment(pc0, pc1), pLine);
-	pne.huePerturbation = 35;
-
-	Model pse;
-	pse.AddTriangle("t1", Triangle(pc2, pc1, p4), pPaint);
-	pse.AddTriangle("t2", Triangle(pc2, p4, p3), pPaint);
-	pse.AddLineSegment("outer", LineSegment(p3, p4), pLine);
-	pse.AddLineSegment("inner", LineSegment(pc1, pc2), pLine);
-	pse.huePerturbation = 35;
-
-	HSVAColor pInnerLine = HSVAColor(1, .9, 1, 0.25);
-
 	Model p;
-	p.AddSubmodel("sw", psw);
-	p.AddSubmodel("nw", pnw);
-	p.AddSubmodel("ne", pne);
-	p.AddSubmodel("se", pse);
-	p.AddLineSegment("d1", LineSegment(pc0, p0), pInnerLine);
-	p.AddLineSegment("d2", LineSegment(pc1, p4), pInnerLine);
-	p.AddLineSegment("d3", LineSegment(pc2, p3), pInnerLine);
-	p.AddLineSegment("d4", LineSegment(pc3, p1), pInnerLine);
+	p.LoadXml(LoadXmlFile("polybian.xml"));
 	p.scale = 30;
 	p.offset = Vector2(windowX / 2, windowY / 2);
 

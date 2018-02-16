@@ -31,9 +31,18 @@ using Geometry::LineSegment;
 #include "Color.h"
 using Color::HSVAColor;
 
+#include "XmlReader.h"
+using XmlReader::XmlNode;
+
 namespace Models
 {
 	struct Primitive;
+
+	struct RefData
+	{
+		map<string, Vector3> points;
+		map<string, HSVAColor> colors;
+	};
 
 	class Model
 	{
@@ -46,6 +55,8 @@ namespace Models
 			Matrix3 parentTransform = Matrix3::Identity,
 			Vector2 parentOffset = Vector2::Origin,
 			PerturbPerlin* parentPerturb = NULL);
+
+		void LoadXml(const XmlNode& modelNode, const RefData& refData = RefData());
 
 		Model* parent;
 		Model& GetRootModel();

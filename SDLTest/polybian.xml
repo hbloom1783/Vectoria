@@ -1,0 +1,54 @@
+﻿<model>
+  <point id="p0" x="-3" y = "0" z = "0"/>
+  <point id="p1" x= "0" y ="-3" z = "0"/>
+  <point id="p2" x= "3" y = "0" z = "0"/>
+  <point id="p3" x= "0" y = "3" z = "0"/>
+  <point id="pb" x= "0" y = "7" z ="-2"/>
+
+  <point id="pc0" x="-1" y = "0" z ="1"/>
+  <point id="pc1" x= "0" y ="-1" z ="1"/>
+  <point id="pc2" x= "1" y = "0" z ="1"/>
+  <point id="pc3" x= "0" y = "1" z ="1"/>
+
+  <color id="surface" h="-015.00" s="0.90" v="1.00" a="1.00" />
+  <color id="outline" h=" 001.00" s="0.90" v="1.00" a="1.00" />
+  <color id="ridge"   h=" 001.00" s="0.90" v="1.00" a="0.25" />
+
+  <model id="psw">
+    <triangle id="t1" p0="pc0" p1="pc3" p2="pb" color="surface"/>
+    <triangle id="t2" p0="pc0" p1="pb" p2="p0" color="surface"/>
+    
+    <linesegment id="outer1" p0="p0" p1="pb" color="outline"/>
+    <linesegment id="outer2" p0="pb" p1="p3" color="outline"/>
+    <linesegment id="inner" p0="pc3" p1="pc0" color="outline"/>
+  </model>
+
+  <model id="pnw">
+    <triangle id="t1" p0="pc1" p1="pc0" p2="p0" color="surface"/>
+    <triangle id="t2" p0="pc1" p1="p0" p2="p1" color="surface"/>
+
+    <linesegment id="outer" p0="p0" p1="p1" color="outline"/>
+    <linesegment id="inner" p0="pc0" p1="pc1" color="outline"/>
+  </model>
+
+  <model id="pne">
+    <triangle id="t1" p0="pc2" p1="pc1" p2="p1" color="surface"/>
+    <triangle id="t2" p0="pc2" p1="p1" p2="p2" color="surface"/>
+
+    <linesegment id="outer" p0="p1" p1="p2" color="outline"/>
+    <linesegment id="inner" p0="pc1" p1="pc2" color="outline"/>
+  </model>
+
+  <model id="pse">
+    <triangle id="t1" p0="pc3" p1="pc2" p2="p2" color="surface"/>
+    <triangle id="t2" p0="pc3" p1="p2" p2="p3" color="surface"/>
+
+    <linesegment id="outer" p0="p2" p1="p3" color="outline"/>
+    <linesegment id="inner" p0="pc2" p1="pc3" color="outline"/>
+  </model>
+
+  <linesegment id="r1" p0="pc0" p1="p0" color="ridge"/>
+  <linesegment id="r2" p0="pc1" p1="p1" color="ridge"/>
+  <linesegment id="r3" p0="pc2" p1="p2" color="ridge"/>
+  <linesegment id="r4" p0="pc3" p1="p3" color="ridge"/>
+</model>
