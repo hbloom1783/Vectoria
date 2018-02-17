@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Color.h" />
+    <ClInclude Include="Font.h" />
     <ClInclude Include="Glitching.h" />
     <ClInclude Include="LineSegment.h" />
     <ClInclude Include="Matrix.h" />
@@ -31,6 +32,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="Font.cpp" />
     <ClCompile Include="Glitching.cpp" />
     <ClCompile Include="LineSegment.cpp" />
     <ClCompile Include="main.cpp" />

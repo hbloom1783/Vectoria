@@ -15,21 +15,20 @@ using Geometry::LineSegment;
 #include "Color.h"
 using Color::HSVAColor;
 
-namespace Models
+namespace RNG
 {
 	float RangeUniform(float bound);
+	float RangeNormal(float lower, float upper);
 	float RangeNormal(float bound);
+	float RangeNormal(float mean, float sigma);
 	int CountPoisson(int expected);
 	bool CoinFlip(float oddsOfTrue = 0.50);
-
-	typedef HSVAColor(*HSVAColorMutator)(const HSVAColor&);
-	typedef LineSegment(*LineSegmentMutator)(const LineSegment&);
-	typedef Triangle(*TriangleMutator)(const Triangle&);
 
 	class Perlin
 	{
 	public:
-		explicit Perlin(uint32_t seed);
+		Perlin();
+		Perlin(uint32_t seed);
 
 		void Reseed(uint32_t seed);
 
@@ -48,7 +47,10 @@ namespace Models
 	private:
 		int32_t p[512];
 	};
+}
 
+namespace Models
+{
 	class DistortionMap
 	{
 	public:
@@ -65,10 +67,10 @@ namespace Models
 	private:
 		float bound;
 
-		float Sample(const Vector3& input, const Perlin& source) const;
+		float Sample(const Vector3& input, const RNG::Perlin& source) const;
 
-		Perlin xNoise;
-		Perlin yNoise;
-		Perlin zNoise;
+		RNG::Perlin xNoise;
+		RNG::Perlin yNoise;
+		RNG::Perlin zNoise;
 	};
 }

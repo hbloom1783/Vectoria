@@ -36,15 +36,21 @@ using Threads::Mutex;
 using Threads::LockHold;
 
 #include "Glitching.h"
-using Models::CoinFlip;
+using RNG::CoinFlip;
+using RNG::Perlin;
 
-static int windowX = 1600;
-static int windowY = 1200;
+#include "Font.h"
+using Models::Font;
+
+#include <ctime>
+
+static int windowX = 800;
+static int windowY = 600;
 
 class Animator : public Thread
 {
 public:
-	Animator(Model& glyph) : glyph(glyph), frameCount(0), done(false), paused(false)
+	Animator(Model& logo, Model& text) : logo(logo), text(text), frameCount(0), done(false), paused(false)
 	{
 	}
 
@@ -58,39 +64,58 @@ public:
 		return done;
 	}
 
-	Mutex glyphGuard;
+	Mutex modelGuard;
 
 	bool paused;
 
 private:
-	Model& glyph;
+	Model& logo;
+	Model& text;
 	int frameCount;
 	bool done;
 	const unsigned long sleepDuration = 1000.0 / 60.0;
 
 	virtual void Execute()
 	{
+		vector<Primitive*> letterStrokes = text.GetAllPrimitives();
 		while (!done)
 		{
+			clock_t begin = clock();
 			if (!paused)
 			{
-				LockHold hold(glyphGuard);
+				LockHold hold(modelGuard);
 
-				if (CoinFlip(0.05))
+				if (CoinFlip(0.025))
 				{
-					glyph.vertexDistortion = 50;
-					glyph.hueDistortion = 60;
+					logo.vertexDistortion = 50;
+					logo.hueDistortion = 60;
+					text.hueRotation = (frameCount * 25) % 360;
+					text.sLerp = 1.0f;
 				}
 				else
 				{
-					glyph.vertexDistortion = 0;
-					glyph.hueDistortion *= 0.90;
+					logo.vertexDistortion = 0;
+					logo.hueDistortion *= 0.90;
+					text.sLerp = 0.0f;
+				}
+
+				int letterState = frameCount % (letterStrokes.size() * 2);
+				if (letterState < letterStrokes.size())
+				{
+					letterStrokes[letterState]->disable = true;
+				}
+				else
+				{
+					letterStrokes[letterState - letterStrokes.size()]->disable = false;
 				}
 
 				frameCount++;
 			}
+			clock_t end = clock();
 
-			_sleep(sleepDuration);
+			float timeElapsed = (end - begin) / 1000.0;
+
+			_sleep(sleepDuration - timeElapsed);
 		}
 	}
 };
@@ -126,19 +151,27 @@ int main(int argc, char* argv[])
 	sun.scale = 0.1;
 	sun.offset = Vector2(windowX - 15, windowY - 15);
 
-	Model polybian;
-	polybian.LoadXml(LoadXmlFile("polybian.xml"));
+	Model polybian = Model(LoadXmlFile("polybian.xml"));
+
+	Font playerFont = Font(LoadXmlFile("playerfont.xml"));
+	Model pressStart = playerFont.ModelText("PRESS START");
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
 		SDL_Window* window = NULL;
 		SDL_Renderer* renderer = NULL;
-		Animator animator(polybian);
 
+		Animator animator(polybian, pressStart);
+
+		//if (SDL_CreateWindowAndRenderer(windowX, windowY, SDL_WINDOW_FULLSCREEN_DESKTOP, &window, &renderer) == 0)
 		if (SDL_CreateWindowAndRenderer(windowX, windowY, SDL_WINDOW_BORDERLESS, &window, &renderer) == 0)
 		{
 			SDL_GetWindowSize(window, &windowX, &windowY);
 			polybian.offset = Vector2(windowX / 2, windowY / 2);
+			polybian.scale = windowX / 800;
+			pressStart.offset = Vector2(windowX / 2, 13 * windowY / 16);
+			pressStart.scale = windowX / 50;
+
 			SDL_ShowCursor(SDL_DISABLE);
 			bool pause = false;
 			int frameCount = 0;
@@ -156,9 +189,10 @@ int main(int argc, char* argv[])
 				sun.offset = Vector2(mouseX, mouseY);
 
 				// render stuff here
-				animator.glyphGuard.Lock();
+				animator.modelGuard.Lock();
 				polybian.Render(renderer, sun.offset);
-				animator.glyphGuard.Unlock();
+				pressStart.Render(renderer, sun.offset);
+				animator.modelGuard.Unlock();
 
 				if (!animator.isDone())
 				{

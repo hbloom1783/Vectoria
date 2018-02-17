@@ -27,6 +27,14 @@ namespace Models
 		this->distortionMap = NULL;
 
 		this->hueDistortion = 0.0f;
+		this->hueRotation = 0.0f;
+		this->sLerp = 1.0f;
+		this->vLerp = 1.0f;
+	}
+
+	Model::Model(const XmlNode& modelNode) : Model()
+	{
+		this->LoadXml(modelNode);
 	}
 
 	void Model::AddLineSegment(const string& name, const LineSegment& lineSegment, const HSVAColor& color)
@@ -60,6 +68,29 @@ namespace Models
 		return this->prims[name];
 	}
 
+	vector<Primitive*> Model::GetAllPrimitives()
+	{
+		vector<Primitive*> result;
+
+		for (auto iter = this->drawOrder.begin(); iter != this->drawOrder.end(); iter++)
+		{
+			string& name = *iter;
+			Primitive& prim = this->prims[name];
+
+			if (prim.type == primSubmodel)
+			{
+				vector<Primitive*> subResult = prim.asSubmodel.GetAllPrimitives();
+				result.insert(result.end(), subResult.begin(), subResult.end());
+			}
+			else
+			{
+				result.push_back(&prim);
+			}
+		}
+
+		return result;
+	}
+
 	void Model::RemovePrimitive(const string& name)
 	{
 		assert(this->prims.find(name) != this->prims.end());
@@ -84,56 +115,59 @@ namespace Models
 			Matrix2::RotationMatrix(realRootModel->rotation).Extend() *
 			Matrix3::ScaleMatrix(realRootModel->scale);
 		Vector2 rootOffset = realRootModel->offset;
-		float hueDelta = RangeNormal(realRootModel->hueDistortion);
+		float hueDelta = realRootModel->hueRotation + RNG::RangeNormal(realRootModel->hueDistortion);
 
 		for (auto iter = this->drawOrder.begin(); iter != this->drawOrder.end(); iter++)
 		{
 			string& name = *iter;
 			Primitive& prim = this->prims[name];
 
-			if (prim.type == primLineSegment)
+			if (prim.disable == false)
 			{
-				LineSegment distorted = realRootModel->distortionMap->Distort(prim.asLine);
-				distorted.Render(
-					renderer,
-					transform,
-					rootOffset,
-					prim.color.DeltaH(hueDelta).Compile());
-			}
-			else if (prim.type == primTriangle)
-			{
-				Triangle distorted = realRootModel->distortionMap->Distort(prim.asTri);
+				if (prim.type == primLineSegment)
+				{
+					LineSegment distorted = realRootModel->distortionMap->Distort(prim.asLine);
+					distorted.Render(
+						renderer,
+						transform,
+						rootOffset,
+						prim.color.DeltaH(hueDelta).LerpSVA(realRootModel->sLerp, realRootModel->vLerp).Compile());
+				}
+				else if (prim.type == primTriangle)
+				{
+					Triangle distorted = realRootModel->distortionMap->Distort(prim.asTri);
 
-				float litAngle = CalculateAngle(
-					distorted.GetNormal(transform),
-					sunPos - rootOffset);
+					float litAngle = CalculateAngle(
+						distorted.GetNormal(transform),
+						sunPos - rootOffset);
 
-				litAngle /= 180.0;
-				litAngle = 1.0f - litAngle;
+					litAngle /= 180.0;
+					litAngle = 1.0f - litAngle;
 
-				if (litAngle > 1)
-					litAngle = 1;
-				else if (litAngle < 0)
-					litAngle = 0;
+					if (litAngle > 1)
+						litAngle = 1;
+					else if (litAngle < 0)
+						litAngle = 0;
 
-				// Leaving the other lighting models around to play with
-				//litAngle = sqrt(litAngle);
-				//litAngle *= litAngle;
-				litAngle = (sqrt(litAngle) + (litAngle*litAngle)) / 2;
-				//litAngle = sqrt(sqrt(litAngle));
+					// Leaving the other lighting models around to play with
+					//litAngle = sqrt(litAngle);
+					//litAngle *= litAngle;
+					litAngle = (sqrt(litAngle) + (litAngle*litAngle)) / 2;
+					//litAngle = sqrt(sqrt(litAngle));
 
-				distorted.Render(
-					renderer,
-					transform,
-					rootOffset,
-					prim.color.DeltaH(hueDelta).LerpSVA(1.0, litAngle).Compile());
-			}
-			else if (prim.type == primSubmodel)
-			{
-				prim.asSubmodel.Render(
-					renderer,
-					sunPos,
-					realRootModel);
+					distorted.Render(
+						renderer,
+						transform,
+						rootOffset,
+						prim.color.DeltaH(hueDelta).LerpSVA(realRootModel->sLerp, litAngle * realRootModel->vLerp).Compile());
+				}
+				else if (prim.type == primSubmodel)
+				{
+					prim.asSubmodel.Render(
+						renderer,
+						sunPos,
+						realRootModel);
+				}
 			}
 		}
 
@@ -205,36 +239,78 @@ namespace Models
 		}
 	}
 
+	Model Model::OffsetModel(const Vector2& offsetBy) const
+	{
+		Model offsetModel = Model();
+
+		for (auto iter = this->prims.begin(); iter != this->prims.end(); iter++)
+		{
+			const string& name = iter->first;
+			const Primitive& prim = iter->second;
+			switch (prim.type)
+			{
+			case primLineSegment:
+				offsetModel.AddLineSegment(
+					name,
+					LineSegment(
+						prim.asLine.GetP0() + offsetBy.Extend(),
+						prim.asLine.GetP1() + offsetBy.Extend()),
+					prim.color);
+				break;
+			case primTriangle:
+				offsetModel.AddTriangle(
+					name,
+					Triangle(
+						prim.asTri.GetP0() + offsetBy.Extend(),
+						prim.asTri.GetP1() + offsetBy.Extend(),
+						prim.asTri.GetP2() + offsetBy.Extend()),
+					prim.color);
+				break;
+			case primSubmodel:
+				offsetModel.AddSubmodel(
+					name,
+					prim.asSubmodel.OffsetModel(offsetBy));
+				break;
+			}
+		}
+
+		return offsetModel;
+	}
+
 	#pragma endregion
 
 	#pragma region Primitive
 
-	Primitive::Primitive(Model* parent) : parent(parent)
+	Primitive::Primitive(Model* parent)
 	{
 		this->type = primInvalid;
+		this->disable = true;
 	}
 
-	Primitive::Primitive(Model* parent, const LineSegment& line, const HSVAColor& color) : parent(parent)
+	Primitive::Primitive(Model* parent, const LineSegment& line, const HSVAColor& color)
 	{
 		this->type = primLineSegment;
 		this->asLine = line;
 		this->color = color;
+		this->disable = false;
 	}
 
-	Primitive::Primitive(Model* parent, const Triangle& triangle, const HSVAColor& color) : parent(parent)
+	Primitive::Primitive(Model* parent, const Triangle& triangle, const HSVAColor& color)
 	{
 		this->type = primTriangle;
 		this->asTri = triangle;
 		this->color = color;
+		this->disable = false;
 	}
 
-	Primitive::Primitive(Model* parent, const Model& submodel) : parent(parent)
+	Primitive::Primitive(Model* parent, const Model& submodel)
 	{
 		this->type = primSubmodel;
 		this->asSubmodel = submodel;
+		this->disable = false;
 	}
 
-	Primitive::Primitive(const Primitive& other) : parent(other.parent)
+	Primitive::Primitive(const Primitive& other)
 	{
 		if (other.type == primTriangle)
 		{
@@ -252,11 +328,11 @@ namespace Models
 			this->asSubmodel = other.asSubmodel;
 		}
 		this->color = other.color;
+		this->disable = other.disable;
 	}
 
 	Primitive& Primitive::operator=(const Primitive& other)
 	{
-		this->parent = other.parent;
 		if (other.type == primTriangle)
 		{
 			this->type = primTriangle;
@@ -273,6 +349,7 @@ namespace Models
 			this->asSubmodel = other.asSubmodel;
 		}
 		this->color = other.color;
+		this->disable = other.disable;
 
 		return *this;
 	}

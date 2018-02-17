@@ -14,7 +14,7 @@ using std::poisson_distribution;
 using std::shuffle;
 using std::begin;
 
-namespace Models
+namespace RNG
 {
 	#pragma region Loose Functions
 
@@ -42,17 +42,41 @@ namespace Models
 			return input;
 	}
 
+	float Clamp(float input, float upper, float lower)
+	{
+		if (input > upper)
+			return upper;
+		else if (input < lower)
+			return lower;
+		else
+			return input;
+	}
+
 	float RangeUniform(float bound)
 	{
 		uniform_real_distribution<float> dist(-bound, bound);
 		return dist(GetEngine());
 	}
 
+	float RangeUniform(float lower, float upper)
+	{
+		uniform_real_distribution<float> dist(lower, upper);
+		return dist(GetEngine());
+	}
+
 	float RangeNormal(float bound)
 	{
-		if (bound == 0) return 0;
+		if (bound == 0) return 0.0f;
 
 		normal_distribution<float> dist(0.0f, bound / 3);
+		return Clamp(dist(GetEngine()), bound);
+	}
+
+	float RangeNormal(float mean, float sigma)
+	{
+		if (sigma == 0) return mean;
+
+		normal_distribution<float> dist(mean, sigma);
 		return dist(GetEngine());
 	}
 
@@ -64,7 +88,7 @@ namespace Models
 
 	bool CoinFlip(float oddsOfTrue)
 	{
-		if ((RangeUniform(0.5) + 0.5) <= oddsOfTrue) return true;
+		if (RangeUniform(0, 1) <= oddsOfTrue) return true;
 		else return false;
 	}
 
@@ -88,6 +112,11 @@ namespace Models
 		const double u = h < 8 ? x : y;
 		const double v = h < 4 ? y : h == 12 || h == 14 ? x : z;
 		return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
+	}
+
+	Perlin::Perlin()
+	{
+		this->Reseed(ReadRD());
 	}
 
 	Perlin::Perlin(uint32_t seed)
@@ -238,15 +267,18 @@ namespace Models
 	}
 
 	#pragma endregion
+}
 
+namespace Models
+{
 	#pragma region DistortionMap
 
-	DistortionMap::DistortionMap(float bound) : xNoise(ReadRD()), yNoise(ReadRD()), zNoise(ReadRD())
+	DistortionMap::DistortionMap(float bound) : xNoise(RNG::ReadRD()), yNoise(RNG::ReadRD()), zNoise(RNG::ReadRD())
 	{
 		this->bound = bound;
 	}
 
-	float DistortionMap::Sample(const Vector3& input, const Perlin& source) const
+	float DistortionMap::Sample(const Vector3& input, const RNG::Perlin& source) const
 	{
 		if (this->bound == 0)
 		{
@@ -254,10 +286,7 @@ namespace Models
 		}
 		else
 		{
-			// whole numbers tend to give 0.0 noise, this avoids that
-			const static float offset = std::_Pi;
-
-			return source.Noise(input.x + offset, input.y + offset, input.z + offset) * this->bound;
+			return source.Noise(input) * this->bound;
 		}
 	}
 

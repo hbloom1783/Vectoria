@@ -1,0 +1,260 @@
+﻿<font sizex="1" sizey="1">
+  <point id="p1" x="-1" y= "1"/>
+  <point id="p2" x= "0" y= "1"/>
+  <point id="p3" x= "1" y= "1"/>
+  <point id="p4" x="-1" y= "0"/>
+  <point id="p5" x= "0" y= "0"/>
+  <point id="p6" x= "1" y= "0"/>
+  <point id="p7" x="-1" y="-1"/>
+  <point id="p8" x= "0" y="-1"/>
+  <point id="p9" x= "1" y="-1"/>
+  
+  <color id="c" h="0" s="1"/>
+	  
+	<model id="basemodel">
+	  <linesegment id="l12" p0="p1" p1="p2" color="c"/>
+	  <linesegment id="l23" p0="p2" p1="p3" color="c"/>
+	  <linesegment id="l45" p0="p4" p1="p5" color="c"/>
+	  <linesegment id="l56" p0="p5" p1="p6" color="c"/>
+	  <linesegment id="l78" p0="p7" p1="p8" color="c"/>
+	  <linesegment id="l89" p0="p8" p1="p9" color="c"/>
+	  
+	  <linesegment id="l14" p0="p1" p1="p4" color="c"/>
+	  <linesegment id="l47" p0="p4" p1="p7" color="c"/>
+	  <linesegment id="l25" p0="p2" p1="p5" color="c"/>
+	  <linesegment id="l58" p0="p5" p1="p8" color="c"/>
+	  <linesegment id="l36" p0="p3" p1="p6" color="c"/>
+	  <linesegment id="l69" p0="p6" p1="p9" color="c"/>
+	  
+	  <linesegment id="l15" p0="p1" p1="p5" color="c"/>
+	  <linesegment id="l24" p0="p4" p1="p2" color="c"/>
+	  <linesegment id="l26" p0="p2" p1="p6" color="c"/>
+	  <linesegment id="l35" p0="p5" p1="p3" color="c"/>
+	  <linesegment id="l48" p0="p4" p1="p8" color="c"/>
+	  <linesegment id="l57" p0="p7" p1="p5" color="c"/>
+	  <linesegment id="l59" p0="p5" p1="p9" color="c"/>
+	  <linesegment id="l68" p0="p8" p1="p6" color="c"/>
+	</model>
+	
+	<letter char="A">
+		<stroke name="l14"/>
+		<stroke name="l48"/>
+		<stroke name="l45"/>
+		<stroke name="l68"/>
+		<stroke name="l56"/>
+		<stroke name="l36"/>
+	</letter>
+	
+	<letter char="B">
+		<stroke name="l14"/>
+		<stroke name="l47"/>
+		<stroke name="l78"/>
+		<stroke name="l45"/>
+		<stroke name="l12"/>
+		<stroke name="l68"/>
+		<stroke name="l56"/>
+		<stroke name="l35"/>
+		<stroke name="l23"/>
+	</letter>
+	
+	<letter char="C">
+		<stroke name="l48"/>
+		<stroke name="l24"/>
+		<stroke name="l89"/>
+		<stroke name="l23"/>
+	</letter>
+	
+	<letter char="D">
+		<stroke name="l14"/>
+		<stroke name="l47"/>
+		<stroke name="l12"/>
+		<stroke name="l78"/>
+		<stroke name="l68"/>
+		<stroke name="l26"/>
+	</letter>
+	
+	<letter char="E">
+		<stroke name="l14"/>
+		<stroke name="l47"/>
+		<stroke name="l78"/>
+		<stroke name="l45"/>
+		<stroke name="l12"/>
+		<stroke name="l89"/>
+		<stroke name="l23"/>
+	</letter>
+	
+	<letter char="F">
+		<stroke name="l14"/>
+		<stroke name="l47"/>
+		<stroke name="l78"/>
+		<stroke name="l45"/>
+		<stroke name="l89"/>
+	</letter>
+	
+	<letter char="G">
+		<stroke name="l14"/>
+		<stroke name="l47"/>
+		<stroke name="l78"/>
+		<stroke name="l12"/>
+		<stroke name="l89"/>
+		<stroke name="l56"/>
+		<stroke name="l23"/>
+		<stroke name="l36"/>
+	</letter>
+	
+	<letter char="H">
+		<stroke name="l14"/>
+		<stroke name="l47"/>
+		<stroke name="l45"/>
+		<stroke name="l56"/>
+		<stroke name="l36"/>
+		<stroke name="l69"/>
+	</letter>
+	
+	<letter char="I">
+		<stroke name="l78"/>
+		<stroke name="l12"/>
+		<stroke name="l25"/>
+		<stroke name="l58"/>
+		<stroke name="l89"/>
+		<stroke name="l23"/>
+	</letter>
+	
+	<letter char="J">
+		<stroke name="l78"/>
+		<stroke name="l12"/>
+		<stroke name="l25"/>
+		<stroke name="l58"/>
+		<stroke name="l89"/>
+	</letter>
+	
+	<letter char="K">
+		<stroke name="l14"/>
+		<stroke name="l47"/>
+		<stroke name="l45"/>
+		<stroke name="l59"/>
+		<stroke name="l35"/>
+	</letter>
+	
+	<letter char="L">
+		<stroke name="l14"/>
+		<stroke name="l47"/>
+		<stroke name="l12"/>
+		<stroke name="l23"/>
+	</letter>
+	
+	<letter char="M">
+		<stroke name="l14"/>
+		<stroke name="l47"/>
+		<stroke name="l57"/>
+		<stroke name="l59"/>
+		<stroke name="l36"/>
+		<stroke name="l69"/>
+	</letter>
+	
+	<letter char="N">
+		<stroke name="l14"/>
+		<stroke name="l47"/>
+		<stroke name="l57"/>
+		<stroke name="l35"/>
+		<stroke name="l36"/>
+		<stroke name="l69"/>
+	</letter>
+	
+	<letter char="O">
+		<stroke name="l24"/>
+		<stroke name="l48"/>
+		<stroke name="l26"/>
+		<stroke name="l68"/>
+	</letter>
+	
+	<letter char="P">
+		<stroke name="l14"/>
+		<stroke name="l47"/>
+		<stroke name="l78"/>
+		<stroke name="l45"/>
+		<stroke name="l68"/>
+		<stroke name="l56"/>
+	</letter>
+	
+	<letter char="Q">
+		<stroke name="l24"/>
+		<stroke name="l48"/>
+		<stroke name="l26"/>
+		<stroke name="l68"/>
+		<stroke name="l35"/>
+	</letter>
+	
+	<letter char="R">
+		<stroke name="l14"/>
+		<stroke name="l47"/>
+		<stroke name="l78"/>
+		<stroke name="l45"/>
+		<stroke name="l68"/>
+		<stroke name="l56"/>
+		<stroke name="l35"/>
+	</letter>
+	
+	<letter char="S">
+		<stroke name="l12"/>
+		<stroke name="l45"/>
+		<stroke name="l48"/>
+		<stroke name="l26"/>
+		<stroke name="l56"/>
+		<stroke name="l89"/>
+	</letter>
+	
+	<letter char="T">
+		<stroke name="l78"/>
+		<stroke name="l25"/>
+		<stroke name="l58"/>
+		<stroke name="l89"/>
+	</letter>
+	
+	<letter char="U">
+		<stroke name="l14"/>
+		<stroke name="l47"/>
+		<stroke name="l12"/>
+		<stroke name="l23"/>
+		<stroke name="l36"/>
+		<stroke name="l69"/>
+	</letter>
+	
+	<letter char="V">
+		<stroke name="l47"/>
+		<stroke name="l24"/>
+		<stroke name="l26"/>
+		<stroke name="l69"/>
+	</letter>
+	
+	<letter char="W">
+		<stroke name="l14"/>
+		<stroke name="l47"/>
+		<stroke name="l15"/>
+		<stroke name="l35"/>
+		<stroke name="l36"/>
+		<stroke name="l69"/>
+	</letter>
+	
+	<letter char="X">
+		<stroke name="l15"/>
+		<stroke name="l57"/>
+		<stroke name="l35"/>
+		<stroke name="l59"/>
+	</letter>
+	
+	<letter char="Y">
+		<stroke name="l57"/>
+		<stroke name="l25"/>
+		<stroke name="l59"/>
+	</letter>
+	
+	<letter char="Z">
+		<stroke name="l12"/>
+		<stroke name="l15"/>
+		<stroke name="l78"/>
+		<stroke name="l23"/>
+		<stroke name="l59"/>
+		<stroke name="l89"/>
+	</letter>
+</font>

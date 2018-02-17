@@ -50,13 +50,14 @@ namespace Models
 	{
 	public:
 		Model();
+		Model(const XmlNode& modelNode);
+
+		void LoadXml(const XmlNode& modelNode, const RefData& refData = RefData());
 
 		void Render(
 			SDL_Renderer* renderer,
 			Vector2 sunPos,
 			Model* rootModel = NULL);
-
-		void LoadXml(const XmlNode& modelNode, const RefData& refData = RefData());
 
 		Vector2 offset;
 		float rotation;
@@ -66,6 +67,9 @@ namespace Models
 		DistortionMap* distortionMap;
 
 		float hueDistortion;
+		float hueRotation;
+		float sLerp;
+		float vLerp;
 
 		void AddLineSegment(const string& name, const LineSegment& lineSegment, const HSVAColor& color);
 		void AddTriangle(const string& name, const Triangle& triangle, const HSVAColor& color);
@@ -73,7 +77,11 @@ namespace Models
 
 		Primitive& GetPrimitive(const string& name);
 
+		vector<Primitive*> GetAllPrimitives();
+
 		void RemovePrimitive(const string& name);
+
+		Model OffsetModel(const Vector2& offsetBy) const;
 
 	private:
 		map<string, Primitive> prims;
@@ -99,7 +107,7 @@ namespace Models
 		Primitive(const Primitive& other);
 		Primitive& operator=(const Primitive& other);
 
-		Model* parent;
+		//Model* parent;
 
 		PrimType type;
 		LineSegment asLine;
@@ -107,5 +115,6 @@ namespace Models
 		Model asSubmodel;
 
 		HSVAColor color;
+		bool disable;
 	};
 }
