@@ -11,8 +11,7 @@ using Geometry::CalculateAngle;
 
 #include "Color.h"
 
-#include "Perturbation.h"
-using Perturb::PerturbNormal;
+#include "Glitching.h"
 
 namespace Models
 {
@@ -20,10 +19,14 @@ namespace Models
 
 	Model::Model()
 	{
+		this->offset = Vector2::Origin;
 		this->rotation = 0;
 		this->scale = 1;
-		this->huePerturbation = 0;
-		this->vertexPerturbation = 0;
+
+		this->vertexDistortion = 0.0f;
+		this->distortionMap = NULL;
+
+		this->hueDistortion = 0.0f;
 	}
 
 	void Model::AddLineSegment(const string& name, const LineSegment& lineSegment, const HSVAColor& color)
@@ -64,26 +67,24 @@ namespace Models
 		this->prims.erase(name);
 		this->drawOrder.remove(name);
 	}
-
+	
 	void Model::Render(
 		SDL_Renderer* renderer,
 		Vector2 sunPos,
-		float parentScale,
-		float parentRotation,
-		Vector2 parentOffset,
-		PerturbPerlin* parentPerlin)
+		Model* rootModel)
 	{
-		Matrix3 transform =
-			Matrix2::RotationMatrix(this->rotation + parentRotation).Extend() *
-			Matrix3::ScaleMatrix(this->scale * parentScale);
-		Vector2 offset = parentOffset + this->offset;
-		float hueDelta = PerturbNormal(this->huePerturbation);
+		Model* realRootModel = rootModel;
+		if (rootModel == NULL)
+		{
+			realRootModel = this;
+			this->distortionMap = new DistortionMap(this->vertexDistortion);
+		}
 
-		PerturbPerlin* perlin;
-		if (parentPerlin == NULL)
-			perlin = new PerturbPerlin(this->vertexPerturbation);
-		else
-			perlin = parentPerlin;
+		Matrix3 transform =
+			Matrix2::RotationMatrix(realRootModel->rotation).Extend() *
+			Matrix3::ScaleMatrix(realRootModel->scale);
+		Vector2 rootOffset = realRootModel->offset;
+		float hueDelta = RangeNormal(realRootModel->hueDistortion);
 
 		for (auto iter = this->drawOrder.begin(); iter != this->drawOrder.end(); iter++)
 		{
@@ -92,17 +93,20 @@ namespace Models
 
 			if (prim.type == primLineSegment)
 			{
-				prim.asLine.PerturbVertices(*perlin, this->scale * parentScale).Render(
+				LineSegment distorted = realRootModel->distortionMap->Distort(prim.asLine);
+				distorted.Render(
 					renderer,
 					transform,
-					offset,
+					rootOffset,
 					prim.color.DeltaH(hueDelta).Compile());
 			}
 			else if (prim.type == primTriangle)
 			{
+				Triangle distorted = realRootModel->distortionMap->Distort(prim.asTri);
+
 				float litAngle = CalculateAngle(
-					prim.asTri.GetNormal(transform),
-					sunPos - offset);
+					distorted.GetNormal(transform),
+					sunPos - rootOffset);
 
 				litAngle /= 180.0;
 				litAngle = 1.0f - litAngle;
@@ -118,40 +122,30 @@ namespace Models
 				litAngle = (sqrt(litAngle) + (litAngle*litAngle)) / 2;
 				//litAngle = sqrt(sqrt(litAngle));
 
-				SDL_Color litColor = prim.color.LerpSVA(1.0, litAngle).DeltaH(hueDelta).Compile();
-
-				prim.asTri.PerturbVertices(*perlin, this->scale * parentScale).Render(
+				distorted.Render(
 					renderer,
 					transform,
-					offset,
-					litColor);
+					rootOffset,
+					prim.color.DeltaH(hueDelta).LerpSVA(1.0, litAngle).Compile());
 			}
 			else if (prim.type == primSubmodel)
 			{
 				prim.asSubmodel.Render(
 					renderer,
 					sunPos,
-					this->scale * parentScale,
-					this->rotation + parentRotation,
-					offset,
-					perlin);
+					realRootModel);
 			}
 		}
 
-		if (parentPerlin == NULL)
-			delete perlin;
+		if (rootModel == NULL)
+		{
+			delete this->distortionMap;
+		}
 	}
 
 	void Model::LoadXml(const XmlNode& modelNode, const RefData& refData)
 	{
 		RefData myRefData = refData;
-
-		this->huePerturbation = modelNode.GetAttribute("hPert", "0").AsFloat();
-		this->scale = modelNode.GetAttribute("scale", "1").AsFloat();
-
-		this->offset = Vector2(
-			modelNode.GetAttribute("offsetx", "0").AsFloat(),
-			modelNode.GetAttribute("offsety", "0").AsFloat());
 
 		vector<XmlNode> children = modelNode.GetChildren();
 		for (auto iter = children.begin(); iter != children.end(); iter++)

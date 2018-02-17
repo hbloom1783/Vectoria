@@ -20,10 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Color.h" />
+    <ClInclude Include="Glitching.h" />
     <ClInclude Include="LineSegment.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="Perturbation.h" />
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="Threading.h" />
     <ClInclude Include="Triangle.h" />
@@ -31,11 +31,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="Glitching.cpp" />
     <ClCompile Include="LineSegment.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="Perturbation.cpp" />
     <ClCompile Include="Threading.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="XmlReader.cpp" />

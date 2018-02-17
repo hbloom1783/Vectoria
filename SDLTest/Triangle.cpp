@@ -53,12 +53,4 @@ namespace Geometry
 			(int)t2.x, (int)t2.y,
 			color.r, color.g, color.b, color.a);
 	}
-
-	Triangle Triangle::PerturbVertices(const PerturbPerlin& perturb, float scale)
-	{
-		return Triangle(
-			perturb.PerturbVector(this->p0, scale),
-			perturb.PerturbVector(this->p1, scale),
-			perturb.PerturbVector(this->p2, scale));
-	}
 }

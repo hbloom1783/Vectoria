@@ -3,9 +3,6 @@
 #include "Matrix.h"
 #include "Renderable.h"
 
-#include "Perturbation.h"
-using Perturb::PerturbPerlin;
-
 namespace Geometry
 {
 	class Triangle : public Renderable
@@ -29,8 +26,6 @@ namespace Geometry
 			Matrix3 transform,
 			Vector2 offset,
 			SDL_Color color);
-
-		Triangle PerturbVertices(const PerturbPerlin& perturb, float scale = 1.0f);
 
 	private:
 		Vector3 p0;

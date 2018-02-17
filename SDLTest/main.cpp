@@ -35,10 +35,11 @@ using Threads::Thread;
 using Threads::Mutex;
 using Threads::LockHold;
 
-#include "Perturbation.h"
+#include "Glitching.h"
+using Models::CoinFlip;
 
-static int windowX = 800;
-static int windowY = 600;
+static int windowX = 1600;
+static int windowY = 1200;
 
 class Animator : public Thread
 {
@@ -67,28 +68,6 @@ private:
 	bool done;
 	const unsigned long sleepDuration = 1000.0 / 60.0;
 
-	float pvalue()
-	{
-		const int sinPeriod = 360;
-		const int flatPeriod = 180;
-		const int cosPeriod = 180;
-
-		int modFrames = frameCount % (cosPeriod + flatPeriod + sinPeriod);
-
-		if (modFrames < sinPeriod)
-		{
-			return 1.0f - abs(sin(modFrames * (M_PI / 360.0)));
-		}
-		else if (modFrames < (sinPeriod + flatPeriod))
-		{
-			return 0;
-		}
-		else
-		{
-			return 1.0f - abs(sin(modFrames * (M_PI / 360.0)));
-		}
-	}
-
 	virtual void Execute()
 	{
 		while (!done)
@@ -97,14 +76,16 @@ private:
 			{
 				LockHold hold(glyphGuard);
 
-				//glyph.rotation = frameCount;
-				//glyph.huePerturbation = pvalue() * 45;
-				//glyph.vertexPerturbation = pvalue() * 25;
-
-				if (Perturb::PerturbPoisson(1) == 4)
-					glyph.vertexPerturbation = 25;
+				if (CoinFlip(0.05))
+				{
+					glyph.vertexDistortion = 50;
+					glyph.hueDistortion = 60;
+				}
 				else
-					glyph.vertexPerturbation = 0;
+				{
+					glyph.vertexDistortion = 0;
+					glyph.hueDistortion *= 0.90;
+				}
 
 				frameCount++;
 			}
@@ -129,31 +110,6 @@ void ScreenShot(SDL_Renderer* renderer)
 	SDL_FreeSurface(sshot);
 }
 
-static Perturb::PerturbPerlin perlin = Perturb::PerturbPerlin(25);
-
-void filledRectRGBA(SDL_Renderer* renderer, HSVAColor color, int x, int y, int w, int h)
-{
-	SDL_Color comp = color.Compile();
-	Vector2 topleft = perlin.PerturbVector(Vector2(x, y));
-	Vector2 topright = perlin.PerturbVector(Vector2(x + w, y));
-	Vector2 bottomleft = perlin.PerturbVector(Vector2(x, y + h));
-	Vector2 bottomright = perlin.PerturbVector(Vector2(x + w, y + h));
-
-	filledTrigonRGBA(
-		renderer,
-		topleft.x, topleft.y,
-		bottomleft.x, bottomleft.y,
-		topright.x, topright.y,
-		comp.r, comp.g, comp.b, comp.a);
-
-	filledTrigonRGBA(
-		renderer,
-		bottomright.x, bottomright.y,
-		topright.x, topright.y,
-		bottomleft.x, bottomleft.y,
-		comp.r, comp.g, comp.b, comp.a);
-}
-
 int main(int argc, char* argv[])
 {
 	Vector3 c(0, 0, 100);
@@ -172,7 +128,6 @@ int main(int argc, char* argv[])
 
 	Model polybian;
 	polybian.LoadXml(LoadXmlFile("polybian.xml"));
-	//polybian.scale = 2;
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
@@ -195,46 +150,6 @@ int main(int argc, char* argv[])
 
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 				SDL_RenderClear(renderer);
-
-				/*HSVAColor colorList[] = {
-					HSVAColor::Red,
-					HSVAColor::Yellow,
-					HSVAColor::Green,
-					HSVAColor::Blue,
-					HSVAColor::Cyan,
-					HSVAColor::Magenta,
-					HSVAColor::White,
-					HSVAColor::Black,
-					HSVAColor::DkRed,
-					HSVAColor::DkYellow,
-					HSVAColor::DkGreen,
-					HSVAColor::DkBlue,
-					HSVAColor::DkCyan,
-					HSVAColor::DkMagenta,
-					HSVAColor::DkWhite,
-					HSVAColor::DkBlack,
-				};
-
-				perlin = Perturb::PerturbPerlin(5);
-				for (int idx = 0; idx < 48; idx++)
-				{
-					filledRectRGBA(
-						renderer,
-						colorList[idx % 16], 
-						(idx % 8) * 100,
-						(idx / 8) * 100,
-						100, 100);
-				}
-
-				SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-				for (int x = 0; x < windowX; x += 25)
-				{
-					for (int y = 0; y < windowY; y += 25)
-					{
-						Vector2 offset = perlin.PerturbVector(Vector2(x, y));
-						SDL_RenderDrawLine(renderer, x, y, offset.x, offset.y);
-					}
-				}*/
 
 				int mouseX, mouseY;
 				SDL_GetMouseState(&mouseX, &mouseY);

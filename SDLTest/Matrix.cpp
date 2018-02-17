@@ -8,9 +8,9 @@ namespace Geometry
 
 	#pragma region Vector2
 
-	Vector3 Vector2::Extend() const
+	Vector3 Vector2::Extend(float z) const
 	{
-		return Vector3(this->x, this->y, 0);
+		return Vector3(this->x, this->y, z);
 	}
 
 	Vector2 Vector2::Normalize() const

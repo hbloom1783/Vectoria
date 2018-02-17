@@ -34,6 +34,8 @@ using Color::HSVAColor;
 #include "XmlReader.h"
 using XmlReader::XmlNode;
 
+#include "Glitching.h"
+
 namespace Models
 {
 	struct Primitive;
@@ -52,10 +54,7 @@ namespace Models
 		void Render(
 			SDL_Renderer* renderer,
 			Vector2 sunPos,
-			float parentScale = 1.0f,
-			float parentRotation = 0.0f,
-			Vector2 parentOffset = Vector2::Origin,
-			PerturbPerlin* parentPerturb = NULL);
+			Model* rootModel = NULL);
 
 		void LoadXml(const XmlNode& modelNode, const RefData& refData = RefData());
 
@@ -63,8 +62,10 @@ namespace Models
 		float rotation;
 		float scale;
 
-		float huePerturbation;
-		float vertexPerturbation;
+		float vertexDistortion;
+		DistortionMap* distortionMap;
+
+		float hueDistortion;
 
 		void AddLineSegment(const string& name, const LineSegment& lineSegment, const HSVAColor& color);
 		void AddTriangle(const string& name, const Triangle& triangle, const HSVAColor& color);

@@ -18,7 +18,7 @@ namespace Geometry
 		float x;
 		float y;
 
-		Vector3 Extend() const;
+		Vector3 Extend(float z = 0.0f) const;
 
 		Vector2 Normalize() const;
 
