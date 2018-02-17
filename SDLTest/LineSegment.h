@@ -24,7 +24,7 @@ namespace Geometry
 			Vector2 offset,
 			SDL_Color color);
 
-		LineSegment PerturbVertices(const PerturbPerlin& perturb);
+		LineSegment PerturbVertices(const PerturbPerlin& perturb, float scale = 1.0f);
 
 	private:
 		Vector3 p0;

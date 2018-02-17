@@ -20,8 +20,6 @@ namespace Models
 
 	Model::Model()
 	{
-		this->parent = NULL;
-
 		this->rotation = 0;
 		this->scale = 1;
 		this->huePerturbation = 0;
@@ -70,19 +68,22 @@ namespace Models
 	void Model::Render(
 		SDL_Renderer* renderer,
 		Vector2 sunPos,
-		Matrix3 parentTransform,
+		float parentScale,
+		float parentRotation,
 		Vector2 parentOffset,
-		PerturbPerlin* parentPerturb)
+		PerturbPerlin* parentPerlin)
 	{
-		Matrix3 transform = parentTransform * Matrix2::RotationMatrix(this->rotation).Extend() * Matrix3::ScaleMatrix(this->scale);
+		Matrix3 transform =
+			Matrix2::RotationMatrix(this->rotation + parentRotation).Extend() *
+			Matrix3::ScaleMatrix(this->scale * parentScale);
 		Vector2 offset = parentOffset + this->offset;
 		float hueDelta = PerturbNormal(this->huePerturbation);
 
 		PerturbPerlin* perlin;
-		if (parentPerturb == NULL)
-			perlin = new PerturbPerlin(this->vertexPerturbation / this->scale);
+		if (parentPerlin == NULL)
+			perlin = new PerturbPerlin(this->vertexPerturbation);
 		else
-			perlin = parentPerturb;
+			perlin = parentPerlin;
 
 		for (auto iter = this->drawOrder.begin(); iter != this->drawOrder.end(); iter++)
 		{
@@ -91,7 +92,7 @@ namespace Models
 
 			if (prim.type == primLineSegment)
 			{
-				prim.asLine.PerturbVertices(*perlin).Render(
+				prim.asLine.PerturbVertices(*perlin, this->scale * parentScale).Render(
 					renderer,
 					transform,
 					offset,
@@ -117,27 +118,40 @@ namespace Models
 				litAngle = (sqrt(litAngle) + (litAngle*litAngle)) / 2;
 				//litAngle = sqrt(sqrt(litAngle));
 
-				prim.asTri.PerturbVertices(*perlin).Render(
+				SDL_Color litColor = prim.color.LerpSVA(1.0, litAngle).DeltaH(hueDelta).Compile();
+
+				prim.asTri.PerturbVertices(*perlin, this->scale * parentScale).Render(
 					renderer,
 					transform,
 					offset,
-					prim.color.LerpSV(1.0, litAngle).DeltaH(hueDelta).Compile());
+					litColor);
 			}
 			else if (prim.type == primSubmodel)
 			{
 				prim.asSubmodel.Render(
 					renderer,
 					sunPos,
-					transform,
+					this->scale * parentScale,
+					this->rotation + parentRotation,
 					offset,
 					perlin);
 			}
 		}
+
+		if (parentPerlin == NULL)
+			delete perlin;
 	}
 
 	void Model::LoadXml(const XmlNode& modelNode, const RefData& refData)
 	{
 		RefData myRefData = refData;
+
+		this->huePerturbation = modelNode.GetAttribute("hPert", "0").AsFloat();
+		this->scale = modelNode.GetAttribute("scale", "1").AsFloat();
+
+		this->offset = Vector2(
+			modelNode.GetAttribute("offsetx", "0").AsFloat(),
+			modelNode.GetAttribute("offsety", "0").AsFloat());
 
 		vector<XmlNode> children = modelNode.GetChildren();
 		for (auto iter = children.begin(); iter != children.end(); iter++)
@@ -197,18 +211,6 @@ namespace Models
 		}
 	}
 
-	Model& Model::GetRootModel()
-	{
-		if (this->parent == NULL)
-		{
-			return *this;
-		}
-		else
-		{
-			return this->parent->GetRootModel();
-		}
-	}
-
 	#pragma endregion
 
 	#pragma region Primitive
@@ -236,7 +238,6 @@ namespace Models
 	{
 		this->type = primSubmodel;
 		this->asSubmodel = submodel;
-		this->asSubmodel.parent = parent;
 	}
 
 	Primitive::Primitive(const Primitive& other) : parent(other.parent)
@@ -250,6 +251,11 @@ namespace Models
 		{
 			this->type = primLineSegment;
 			this->asLine = other.asLine;
+		}
+		else if (other.type == primSubmodel)
+		{
+			this->type = primSubmodel;
+			this->asSubmodel = other.asSubmodel;
 		}
 		this->color = other.color;
 	}

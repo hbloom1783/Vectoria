@@ -1,54 +1,357 @@
 ﻿<model>
-  <point id="p0" x="-3" y = "0" z = "0"/>
-  <point id="p1" x= "0" y ="-3" z = "0"/>
-  <point id="p2" x= "3" y = "0" z = "0"/>
-  <point id="p3" x= "0" y = "3" z = "0"/>
-  <point id="pb" x= "0" y = "7" z ="-2"/>
-
-  <point id="pc0" x="-1" y = "0" z ="1"/>
-  <point id="pc1" x= "0" y ="-1" z ="1"/>
-  <point id="pc2" x= "1" y = "0" z ="1"/>
-  <point id="pc3" x= "0" y = "1" z ="1"/>
-
-  <color id="surface" h="-015.00" s="0.90" v="1.00" a="1.00" />
+  <color id="surface" h="-010.00" s="0.90" v="1.00" a="1.00" />
   <color id="outline" h=" 001.00" s="0.90" v="1.00" a="1.00" />
   <color id="ridge"   h=" 001.00" s="0.90" v="1.00" a="0.25" />
+  
+	<model id="p" scale="15" offsetx="-275" hPert="10">
+	  <point id="p0" x="-3" y = "0" z = "0"/>
+	  <point id="p1" x= "0" y ="-3" z = "0"/>
+	  <point id="p2" x= "3" y = "0" z = "0"/>
+	  <point id="p3" x= "0" y = "3" z = "0"/>
+	  <point id="pb" x= "0" y = "7" z ="-2"/>
 
-  <model id="psw">
-    <triangle id="t1" p0="pc0" p1="pc3" p2="pb" color="surface"/>
-    <triangle id="t2" p0="pc0" p1="pb" p2="p0" color="surface"/>
-    
-    <linesegment id="outer1" p0="p0" p1="pb" color="outline"/>
-    <linesegment id="outer2" p0="pb" p1="p3" color="outline"/>
-    <linesegment id="inner" p0="pc3" p1="pc0" color="outline"/>
-  </model>
+	  <point id="pc0" x="-1" y = "0" z ="1"/>
+	  <point id="pc1" x= "0" y ="-1" z ="1"/>
+	  <point id="pc2" x= "1" y = "0" z ="1"/>
+	  <point id="pc3" x= "0" y = "1" z ="1"/>
 
-  <model id="pnw">
-    <triangle id="t1" p0="pc1" p1="pc0" p2="p0" color="surface"/>
-    <triangle id="t2" p0="pc1" p1="p0" p2="p1" color="surface"/>
+	  <model id="psw" hPert="15">
+	    <triangle id="t1" p0="pc0" p1="pc3" p2="pb" color="surface"/>
+	    <triangle id="t2" p0="pc0" p1="pb" p2="p0" color="surface"/>
+	    
+	    <linesegment id="outer1" p0="p0" p1="pb" color="outline"/>
+	    <linesegment id="outer2" p0="pb" p1="p3" color="outline"/>
+	    <linesegment id="inner" p0="pc3" p1="pc0" color="outline"/>
+	  </model>
 
-    <linesegment id="outer" p0="p0" p1="p1" color="outline"/>
-    <linesegment id="inner" p0="pc0" p1="pc1" color="outline"/>
-  </model>
+	  <model id="pnw" hPert="15">
+	    <triangle id="t1" p0="pc1" p1="pc0" p2="p0" color="surface"/>
+	    <triangle id="t2" p0="pc1" p1="p0" p2="p1" color="surface"/>
 
-  <model id="pne">
-    <triangle id="t1" p0="pc2" p1="pc1" p2="p1" color="surface"/>
-    <triangle id="t2" p0="pc2" p1="p1" p2="p2" color="surface"/>
+	    <linesegment id="outer" p0="p0" p1="p1" color="outline"/>
+	    <linesegment id="inner" p0="pc0" p1="pc1" color="outline"/>
+	  </model>
 
-    <linesegment id="outer" p0="p1" p1="p2" color="outline"/>
-    <linesegment id="inner" p0="pc1" p1="pc2" color="outline"/>
-  </model>
+	  <model id="pne" hPert="15">
+	    <triangle id="t1" p0="pc2" p1="pc1" p2="p1" color="surface"/>
+	    <triangle id="t2" p0="pc2" p1="p1" p2="p2" color="surface"/>
 
-  <model id="pse">
-    <triangle id="t1" p0="pc3" p1="pc2" p2="p2" color="surface"/>
-    <triangle id="t2" p0="pc3" p1="p2" p2="p3" color="surface"/>
+	    <linesegment id="outer" p0="p1" p1="p2" color="outline"/>
+	    <linesegment id="inner" p0="pc1" p1="pc2" color="outline"/>
+	  </model>
 
-    <linesegment id="outer" p0="p2" p1="p3" color="outline"/>
-    <linesegment id="inner" p0="pc2" p1="pc3" color="outline"/>
-  </model>
+	  <model id="pse" hPert="15">
+	    <triangle id="t1" p0="pc3" p1="pc2" p2="p2" color="surface"/>
+	    <triangle id="t2" p0="pc3" p1="p2" p2="p3" color="surface"/>
 
-  <linesegment id="r1" p0="pc0" p1="p0" color="ridge"/>
-  <linesegment id="r2" p0="pc1" p1="p1" color="ridge"/>
-  <linesegment id="r3" p0="pc2" p1="p2" color="ridge"/>
-  <linesegment id="r4" p0="pc3" p1="p3" color="ridge"/>
+	    <linesegment id="outer" p0="p2" p1="p3" color="outline"/>
+	    <linesegment id="inner" p0="pc2" p1="pc3" color="outline"/>
+	  </model>
+
+	  <linesegment id="r1" p0="pc0" p1="p0" color="ridge"/>
+	  <linesegment id="r2" p0="pc1" p1="p1" color="ridge"/>
+	  <linesegment id="r3" p0="pc2" p1="p2" color="ridge"/>
+	  <linesegment id="r4" p0="pc3" p1="p3" color="ridge"/>
+	</model>
+	
+	<model id="o" scale="15" offsetx="-175" hPert="10">
+	  <point id="o0" x="-3" y = "0" z = "0"/>
+	  <point id="o1" x= "0" y ="-3" z = "0"/>
+	  <point id="o2" x= "3" y = "0" z = "0"/>
+	  <point id="o3" x= "0" y = "3" z = "0"/>
+
+	  <point id="oc0" x="-1" y = "0" z ="1"/>
+	  <point id="oc1" x= "0" y ="-1" z ="1"/>
+	  <point id="oc2" x= "1" y = "0" z ="1"/>
+	  <point id="oc3" x= "0" y = "1" z ="1"/>
+
+	  <model id="osw" hPert="15">
+	    <triangle id="t1" p0="oc0" p1="oc3" p2="o3" color="surface"/>
+	    <triangle id="t2" p0="oc0" p1="o3" p2="o0" color="surface"/>
+	    
+	    <linesegment id="outer" p0="o3" p1="o0" color="outline"/>
+	    <linesegment id="inner" p0="oc3" p1="oc0" color="outline"/>
+	  </model>
+
+	  <model id="onw" hPert="15">
+	    <triangle id="t1" p0="oc1" p1="oc0" p2="o0" color="surface"/>
+	    <triangle id="t2" p0="oc1" p1="o0" p2="o1" color="surface"/>
+
+	    <linesegment id="outer" p0="o0" p1="o1" color="outline"/>
+	    <linesegment id="inner" p0="oc0" p1="oc1" color="outline"/>
+	  </model>
+
+	  <model id="one" hPert="15">
+	    <triangle id="t1" p0="oc2" p1="oc1" p2="o1" color="surface"/>
+	    <triangle id="t2" p0="oc2" p1="o1" p2="o2" color="surface"/>
+
+	    <linesegment id="outer" p0="o1" p1="o2" color="outline"/>
+	    <linesegment id="inner" p0="oc1" p1="oc2" color="outline"/>
+	  </model>
+
+	  <model id="ose" hPert="15">
+	    <triangle id="t1" p0="oc3" p1="oc2" p2="o2" color="surface"/>
+	    <triangle id="t2" p0="oc3" p1="o2" p2="o3" color="surface"/>
+
+	    <linesegment id="outer" p0="o2" p1="o3" color="outline"/>
+	    <linesegment id="inner" p0="oc2" p1="oc3" color="outline"/>
+	  </model>
+
+	  <linesegment id="r1" p0="oc0" p1="o0" color="ridge"/>
+	  <linesegment id="r2" p0="oc1" p1="o1" color="ridge"/>
+	  <linesegment id="r3" p0="oc2" p1="o2" color="ridge"/>
+	  <linesegment id="r4" p0="oc3" p1="o3" color="ridge"/>
+	</model>
+	
+	<model id="l" scale="15" offsetx="-100" hPert="10">
+		<point id="l0" x= "0" y="-7" z="0"/>
+		<point id="l1" x= "0" y= "1" z="1"/>
+		<point id="l2" x= "2" y= "3" z="0"/>
+		<point id="l3" x="-2" y= "3" z="0"/>
+		
+	  <triangle id="t1" p0="l0" p1="l1" p2="l3" color="surface"/>
+	  <triangle id="t2" p0="l1" p1="l2" p2="l3" color="surface"/>
+	  
+	  <linesegment id="outer1" p0="l0" p1="l1" color="outline"/>
+	  <linesegment id="outer2" p0="l1" p1="l2" color="outline"/>
+	  <linesegment id="outer3" p0="l2" p1="l3" color="outline"/>
+	  <linesegment id="outer4" p0="l3" p1="l0" color="outline"/>
+	  
+	  <linesegment id="r1" p0="l1" p1="l3" color="ridge"/>
+	</model>
+	
+	<model id="y" scale="15" offsetx="-45" hPert="10">
+		<point id="y0" x="-3" y= "0" z= "0"/>
+		<point id="y1" x="-1" y="-3" z= "0"/>
+		<point id="y2" x="-1" y= "0" z= "1"/>
+		<point id="y3" x= "0" y= "1" z= "1"/>
+		
+		<point id="y4" x= "1" y= "0" z= "1"/>
+		<point id="y5" x= "1" y="-3" z= "0"/>
+		<point id="y6" x= "3" y= "0" z= "0"/>
+		
+		<point id="y7" x= "0" y= "7" z="-2"/>
+		<point id="y8" x= "0" y= "3" z= "0"/>
+		
+		<model id="ynw" hPert="10">
+			<triangle id="t1" p0="y0" p1="y1" p2="y2" color="surface"/>
+			
+			<linesegment id="outer1" p0="y0" p1="y1" color="outline"/>
+			<linesegment id="outer2" p0="y1" p1="y2" color="outline"/>
+		</model>
+
+		<model id="yne" hPert="10">
+			<triangle id="t1" p0="y4" p1="y5" p2="y6" color="surface"/>
+			
+			<linesegment id="outer1" p0="y4" p1="y5" color="outline"/>
+			<linesegment id="outer2" p0="y5" p1="y6" color="outline"/>
+		</model>
+		
+		<model id="yse" hPert="10">
+			<triangle id="t1" p0="y3" p1="y4" p2="y6" color="surface"/>
+			<triangle id="t2" p0="y3" p1="y6" p2="y7" color="surface"/>
+			
+			<linesegment id="outer1" p0="y6" p1="y7" color="outline"/>
+			<linesegment id="outer2" p0="y7" p1="y8" color="outline"/>
+			<linesegment id="inner" p0="y3" p1="y4" color="outline"/>
+		</model>
+		
+		<model id="ysw" hPert="10">
+			<triangle id="t1" p0="y2" p1="y3" p2="y8" color="surface"/>
+			<triangle id="t2" p0="y2" p1="y8" p2="y0" color="surface"/>
+			
+			<linesegment id="outer1" p0="y8" p1="y0" color="outline"/>
+			<linesegment id="inner" p0="y2" p1="y3" color="outline"/>
+		</model>
+	</model>
+	
+	<model id="b" scale="15" offsetx= "55" hPert="10">
+	  <point id="b0" x="-3" y = "0" z = "0"/>
+	  <point id="b1" x= "0" y ="-3" z = "0"/>
+	  <point id="b2" x= "3" y = "0" z = "0"/>
+	  <point id="b3" x= "0" y = "3" z = "0"/>
+	  <point id="bt" x= "0" y ="-7" z ="-2"/>
+
+	  <point id="bc0" x="-1" y = "0" z ="1"/>
+	  <point id="bc1" x= "0" y ="-1" z ="1"/>
+	  <point id="bc2" x= "1" y = "0" z ="1"/>
+	  <point id="bc3" x= "0" y = "1" z ="1"/>
+
+	  <model id="bnw"  hPert="10">
+	    <triangle id="t1" p0="bc0" p1="bt" p2="bc1" color="surface"/>
+	    <triangle id="t2" p0="bc0" p1="b0" p2="bt" color="surface"/>
+	    
+	    <linesegment id="outer1" p0="b0" p1="bt" color="outline"/>
+	    <linesegment id="outer2" p0="bt" p1="b1" color="outline"/>
+	    <linesegment id="inner" p0="bc0" p1="bc1" color="outline"/>
+	  </model>
+
+	  <model id="bne"  hPert="10">
+	    <triangle id="t1" p0="bc1" p1="b2" p2="bc2" color="surface"/>
+	    <triangle id="t2" p0="bc1" p1="b1" p2="b2" color="surface"/>
+
+	    <linesegment id="outer" p0="b1" p1="b2" color="outline"/>
+	    <linesegment id="inner" p0="bc1" p1="bc2" color="outline"/>
+	  </model>
+
+	  <model id="bse"  hPert="10">
+	    <triangle id="t1" p0="bc2" p1="b3" p2="bc3" color="surface"/>
+	    <triangle id="t2" p0="bc2" p1="b2" p2="b3" color="surface"/>
+
+	    <linesegment id="outer" p0="b2" p1="b3" color="outline"/>
+	    <linesegment id="inner" p0="bc2" p1="bc3" color="outline"/>
+	  </model>
+
+	  <model id="bsw"  hPert="10">
+	    <triangle id="t1" p0="bc3" p1="b0" p2="bc0" color="surface"/>
+	    <triangle id="t2" p0="bc3" p1="b3" p2="b0" color="surface"/>
+
+	    <linesegment id="outer" p0="b3" p1="b0" color="outline"/>
+	    <linesegment id="inner" p0="bc3" p1="bc0" color="outline"/>
+	  </model>
+
+	  <linesegment id="r1" p0="bc0" p1="b0" color="ridge"/>
+	  <linesegment id="r2" p0="bc1" p1="b1" color="ridge"/>
+	  <linesegment id="r3" p0="bc2" p1="b2" color="ridge"/>
+	  <linesegment id="r4" p0="bc3" p1="b3" color="ridge"/>
+	</model>
+	
+	<model id="i" scale="15" offsetx="115" hPert="10">
+		<point id="i0" x=  "0" y="-1" z="0"/>
+		<point id="i1" x= "-1" y="-3" z="0"/>
+		<point id="i2" x=  "0" y="-3" z="1"/>
+		<point id="i3" x=  "1" y="-3" z="0"/>
+		<point id="i4" x= "-1" y= "3" z="0"/>
+		<point id="i5" x=  "0" y= "3" z="1"/>
+		<point id="i6" x=  "1" y= "3" z="0"/>
+		
+	  <triangle id="t1" p0="i0" p1="i1" p2="i2" color="surface"/>
+	  <triangle id="t2" p0="i0" p1="i2" p2="i3" color="surface"/>
+	  <triangle id="t3" p0="i0" p1="i6" p2="i5" color="surface"/>
+	  <triangle id="t4" p0="i0" p1="i5" p2="i4" color="surface"/>
+	  
+	  <linesegment id="outer1" p0="i0" p1="i1" color="outline"/>
+	  <linesegment id="outer2" p0="i1" p1="i2" color="outline"/>
+	  <linesegment id="outer3" p0="i2" p1="i3" color="outline"/>
+	  <linesegment id="outer4" p0="i3" p1="i0" color="outline"/>
+	  
+	  <linesegment id="outer5" p0="i0" p1="i6" color="outline"/>
+	  <linesegment id="outer6" p0="i6" p1="i5" color="outline"/>
+	  <linesegment id="outer7" p0="i5" p1="i4" color="outline"/>
+	  <linesegment id="outer8" p0="i4" p1="i0" color="outline"/>
+	  
+	  <linesegment id="r1" p0="i0" p1="i2" color="ridge"/>
+	  <linesegment id="r2" p0="i0" p1="i5" color="ridge"/>
+	</model>
+	
+	<model id="a" scale="15" offsetx="175" hPert="10">
+	  <point id="a0"  x=  "-3" y =   "0" z = "0"/>
+	  <point id="a1"  x=   "0" y =  "-3" z = "0"/>
+	  <point id="a2"  x=   "3" y =   "0" z = "0"/>
+	  <point id="a3"  x=   "0" y =   "3" z = "0"/>
+	  <point id="at"  x=   "1" y =   "3" z = "0"/>
+	  <point id="atc" x=   "1" y =   "2" z = "0"/>
+
+	  <point id="ac0" x="-1" y = "0" z ="1"/>
+	  <point id="ac1" x= "0" y ="-1" z ="1"/>
+	  <point id="ac2" x= "1" y = "0" z ="1"/>
+	  <point id="ac3" x= "0" y = "1" z ="1"/>
+
+	  <model id="asw"  hPert="10">
+	    <triangle id="t1" p0="ac0" p1="ac3" p2="a3" color="surface"/>
+	    <triangle id="t2" p0="ac0" p1="a3" p2="a0" color="surface"/>
+	    
+	    <linesegment id="outer" p0="a3" p1="a0" color="outline"/>
+	    <linesegment id="inner" p0="ac3" p1="ac0" color="outline"/>
+	  </model>
+
+	  <model id="anw"  hPert="10">
+	    <triangle id="t1" p0="ac1" p1="ac0" p2="a0" color="surface"/>
+	    <triangle id="t2" p0="ac1" p1="a0" p2="a1" color="surface"/>
+	    
+	    <linesegment id="outer" p0="a0" p1="a1" color="outline"/>
+	    <linesegment id="inner" p0="ac0" p1="ac1" color="outline"/>
+	  </model>
+
+	  <model id="ane"  hPert="10">
+	    <triangle id="t1" p0="ac2" p1="ac1" p2="a1" color="surface"/>
+	    <triangle id="t2" p0="ac2" p1="a1" p2="a2" color="surface"/>
+	    
+	    <linesegment id="outer" p0="a1" p1="a2" color="outline"/>
+	    <linesegment id="inner" p0="ac1" p1="ac2" color="outline"/>
+	  </model>
+
+	  <model id="ase"  hPert="10">
+	    <triangle id="t1" p0="ac3" p1="ac2" p2="a2" color="surface"/>
+	    <triangle id="t2" p0="ac3" p1="a2" p2="a3" color="surface"/>
+	    
+	    <linesegment id="outer" p0="a2" p1="a3" color="outline"/>
+	    <linesegment id="inner" p0="ac2" p1="ac3" color="outline"/>
+	  </model>
+
+	  <model id="at"  hPert="10">
+	    <triangle id="t1" p0="ac2" p1="a2" p2="at" color="surface"/>
+	    
+	    <linesegment id="outer1" p0="a2" p1="at" color="outline"/>
+	    <linesegment id="outer2" p0="at" p1="atc" color="outline"/>
+	  </model>
+
+	  <linesegment id="r1" p0="ac0" p1="a0" color="ridge"/>
+	  <linesegment id="r2" p0="ac1" p1="a1" color="ridge"/>
+	  <linesegment id="r3" p0="ac2" p1="a2" color="ridge"/>
+	  <linesegment id="r4" p0="ac3" p1="a3" color="ridge"/>
+	  <linesegment id="r5" p0="ac2" p1="atc" color="ridge"/>
+	</model>
+	
+	<model id="n" scale="15" offsetx="275" hPert="10">
+		<point id="n0" x=  "-3" y=   "0" z="0"/>
+		<point id="n1" x=   "0" y=  "-3" z="0"/>
+		<point id="n2" x=   "3" y=   "0" z="0"/>
+		<point id="n3" x=   "1" y=   "3" z="0"/>
+		<point id="n4" x=   "1" y=   "0" z="1"/>
+		<point id="n5" x=   "0" y=  "-1" z="1"/>
+		<point id="n6" x=  "-1" y=   "0" z="1"/>
+		<point id="n7" x=  "-1" y=   "3" z="0"/>
+		<point id="n8" x=  "-1" y=  "-3" z="0"/>
+		<point id="n9" x="-1" y="-2" z="0"/>
+		
+	  <model id="nnw"  hPert="10">
+	  	<triangle id="t1" p0="n0" p1="n1" p2="n6" color="surface"/>
+	  	<triangle id="t2" p0="n6" p1="n1" p2="n5" color="surface"/>
+	    
+	    <linesegment id="outer" p0="n0" p1="n1" color="outline"/>
+	    <linesegment id="inner" p0="n6" p1="n5" color="outline"/>
+	  </model>
+	  
+	  <model id="nne"  hPert="10">
+	  	<triangle id="t1" p0="n5" p1="n1" p2="n2" color="surface"/>
+	  	<triangle id="t2" p0="n4" p1="n5" p2="n2" color="surface"/>
+	    
+	    <linesegment id="outer" p0="n1" p1="n2" color="outline"/>
+	    <linesegment id="inner" p0="n5" p1="n4" color="outline"/>
+	  </model>
+	  
+	  <model id="nse"  hPert="10">
+	  	<triangle id="t1" p0="n2" p1="n3" p2="n4" color="surface"/>
+	    
+	    <linesegment id="outer1" p0="n2" p1="n3" color="outline"/>
+	    <linesegment id="outer2" p0="n3" p1="n4" color="outline"/>
+	  </model>
+	  
+	  <model id="nw"  hPert="10">
+	  	<triangle id="t1" p0="n0" p1="n8" p2="n6" color="surface"/>
+	  	<triangle id="t2" p0="n0" p1="n6" p2="n7" color="surface"/>
+	    
+	    <linesegment id="outer1" p0="n6" p1="n7" color="outline"/>
+	    <linesegment id="outer2" p0="n7" p1="n0" color="outline"/>
+	    <linesegment id="outer3" p0="n0" p1="n8" color="outline"/>
+	    <linesegment id="outer4" p0="n8" p1="n9" color="outline"/>
+	  </model>
+	  
+	  <linesegment id="r1" p0="n6" p1="n0" color="ridge"/>
+	  <linesegment id="r2" p0="n5" p1="n1" color="ridge"/>
+	  <linesegment id="r3" p0="n4" p1="n2" color="ridge"/>
+	  <linesegment id="r4" p0="n6" p1="n9" color="ridge"/>
+		
+	</model>
 </model>

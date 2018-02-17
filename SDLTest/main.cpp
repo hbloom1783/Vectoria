@@ -37,8 +37,8 @@ using Threads::LockHold;
 
 #include "Perturbation.h"
 
-const static int windowX = 800;
-const static int windowY = 600;
+static int windowX = 800;
+static int windowY = 600;
 
 class Animator : public Thread
 {
@@ -52,6 +52,11 @@ public:
 		done = true;
 	}
 
+	bool isDone()
+	{
+		return done;
+	}
+
 	Mutex glyphGuard;
 
 	bool paused;
@@ -62,6 +67,28 @@ private:
 	bool done;
 	const unsigned long sleepDuration = 1000.0 / 60.0;
 
+	float pvalue()
+	{
+		const int sinPeriod = 360;
+		const int flatPeriod = 180;
+		const int cosPeriod = 180;
+
+		int modFrames = frameCount % (cosPeriod + flatPeriod + sinPeriod);
+
+		if (modFrames < sinPeriod)
+		{
+			return 1.0f - abs(sin(modFrames * (M_PI / 360.0)));
+		}
+		else if (modFrames < (sinPeriod + flatPeriod))
+		{
+			return 0;
+		}
+		else
+		{
+			return 1.0f - abs(sin(modFrames * (M_PI / 360.0)));
+		}
+	}
+
 	virtual void Execute()
 	{
 		while (!done)
@@ -70,10 +97,16 @@ private:
 			{
 				LockHold hold(glyphGuard);
 
-				glyph.rotation = frameCount++;
-				float perturbation = 1.0 - abs(cos(glyph.rotation * (M_PI/360.0)));
-				glyph.huePerturbation = perturbation * 45;
-				glyph.vertexPerturbation = perturbation * 25;
+				//glyph.rotation = frameCount;
+				//glyph.huePerturbation = pvalue() * 45;
+				//glyph.vertexPerturbation = pvalue() * 25;
+
+				if (Perturb::PerturbPoisson(1) == 4)
+					glyph.vertexPerturbation = 25;
+				else
+					glyph.vertexPerturbation = 0;
+
+				frameCount++;
 			}
 
 			_sleep(sleepDuration);
@@ -84,8 +117,8 @@ private:
 void ScreenShot(SDL_Renderer* renderer)
 {
 	static int number = 0;
-	//char fileName[] = "screenshots/screenshot_000.bmp";
-	//sprintf_s(fileName, "screenshots/screenshot_%03d.bmp", number++);
+	//char fileName[] = "..\\screenshots\\screenshot_000.bmp";
+	//sprintf_s(fileName, "..\\screenshots\\screenshot_%03d.bmp", number++);
 	char fileName[] = "screenshot_000.bmp";
 	sprintf_s(fileName, "screenshot_%03d.bmp", number++);
 
@@ -137,19 +170,20 @@ int main(int argc, char* argv[])
 	sun.scale = 0.1;
 	sun.offset = Vector2(windowX - 15, windowY - 15);
 
-	Model p;
-	p.LoadXml(LoadXmlFile("polybian.xml"));
-	p.scale = 30;
-	p.offset = Vector2(windowX / 2, windowY / 2);
+	Model polybian;
+	polybian.LoadXml(LoadXmlFile("polybian.xml"));
+	//polybian.scale = 2;
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
 		SDL_Window* window = NULL;
 		SDL_Renderer* renderer = NULL;
-		Animator animator(p);
+		Animator animator(polybian);
 
 		if (SDL_CreateWindowAndRenderer(windowX, windowY, SDL_WINDOW_BORDERLESS, &window, &renderer) == 0)
 		{
+			SDL_GetWindowSize(window, &windowX, &windowY);
+			polybian.offset = Vector2(windowX / 2, windowY / 2);
 			SDL_ShowCursor(SDL_DISABLE);
 			bool pause = false;
 			int frameCount = 0;
@@ -202,10 +236,19 @@ int main(int argc, char* argv[])
 					}
 				}*/
 
+				int mouseX, mouseY;
+				SDL_GetMouseState(&mouseX, &mouseY);
+				sun.offset = Vector2(mouseX, mouseY);
+
 				// render stuff here
 				animator.glyphGuard.Lock();
-				p.Render(renderer, sun.offset);
+				polybian.Render(renderer, sun.offset);
 				animator.glyphGuard.Unlock();
+
+				if (!animator.isDone())
+				{
+					//ScreenShot(renderer);
+				}
 
 				sun.Render(renderer, Vector2::Origin);
 

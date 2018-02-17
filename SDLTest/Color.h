@@ -13,7 +13,7 @@ namespace Color
 		SDL_Color Compile() const;
 
 		HSVAColor DeltaH(float hDelta) const;
-		HSVAColor LerpSV(float sLerp, float vLerp, float aLerp = 1.0f) const;
+		HSVAColor LerpSVA(float sLerp, float vLerp, float aLerp = 1.0f) const;
 
 		const static HSVAColor Red;
 		const static HSVAColor Yellow;

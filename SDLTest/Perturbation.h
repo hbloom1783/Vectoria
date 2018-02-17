@@ -44,8 +44,8 @@ namespace Perturb
 	{
 	public:
 		PerturbPerlin(float bound);
-		Vector2 PerturbVector(Vector2 input) const;
-		Vector3 PerturbVector(Vector3 input) const;
+		Vector2 PerturbVector(Vector2 input, float scale = 0.0f) const;
+		Vector3 PerturbVector(Vector3 input, float scale = 0.0f) const;
 
 	private:
 		float bound;

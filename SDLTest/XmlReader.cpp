@@ -36,7 +36,7 @@ namespace XmlReader
 	{
 		LIBXML_TEST_VERSION
 
-			xmlDoc *doc = xmlReadFile(path.c_str(), NULL, 0);
+		xmlDoc *doc = xmlReadFile(path.c_str(), NULL, 0);
 
 		if (doc == NULL)
 		{

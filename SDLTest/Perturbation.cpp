@@ -234,17 +234,17 @@ namespace Perturb
 		this->bound = bound;
 	}
 
-	Vector2 PerturbPerlin::PerturbVector(Vector2 input) const
+	Vector2 PerturbPerlin::PerturbVector(Vector2 input, float scale) const
 	{
-		return this->PerturbVector(input.Extend()).Project();
+		return this->PerturbVector(input.Extend(), scale).Project();
 	}
 
-	Vector3 PerturbPerlin::PerturbVector(Vector3 input) const
+	Vector3 PerturbPerlin::PerturbVector(Vector3 input, float scale) const
 	{
 		Vector3 offset = Vector3(
-			this->xNoise.OctaveNoise(input, 1) * this->bound,
-			this->yNoise.OctaveNoise(input, 1) * this->bound,
-			this->zNoise.OctaveNoise(input, 1) * this->bound);
+			this->xNoise.OctaveNoise(input, 1) * this->bound / scale,
+			this->yNoise.OctaveNoise(input, 1) * this->bound / scale,
+			this->zNoise.OctaveNoise(input, 1) * this->bound / scale);
 
 		return input + offset;
 	}

@@ -102,7 +102,7 @@ namespace Color
 			this->a);
 	}
 
-	HSVAColor HSVAColor::LerpSV(float sLerp, float vLerp, float aLerp) const
+	HSVAColor HSVAColor::LerpSVA(float sLerp, float vLerp, float aLerp) const
 	{
 		return HSVAColor(
 			this->h,

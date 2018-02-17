@@ -30,7 +30,7 @@ namespace Geometry
 			Vector2 offset,
 			SDL_Color color);
 
-		Triangle PerturbVertices(const PerturbPerlin& perturb);
+		Triangle PerturbVertices(const PerturbPerlin& perturb, float scale = 1.0f);
 
 	private:
 		Vector3 p0;

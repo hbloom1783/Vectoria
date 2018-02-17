@@ -52,14 +52,12 @@ namespace Models
 		void Render(
 			SDL_Renderer* renderer,
 			Vector2 sunPos,
-			Matrix3 parentTransform = Matrix3::Identity,
+			float parentScale = 1.0f,
+			float parentRotation = 0.0f,
 			Vector2 parentOffset = Vector2::Origin,
 			PerturbPerlin* parentPerturb = NULL);
 
 		void LoadXml(const XmlNode& modelNode, const RefData& refData = RefData());
-
-		Model* parent;
-		Model& GetRootModel();
 
 		Vector2 offset;
 		float rotation;
